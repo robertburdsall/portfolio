@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- ===================================================================
+     All visible text lives in content.js — edit that file, not this one.
+     The tags below are the exception: they're what shows in search
+     results and link previews, so they have to be real HTML.
+     =================================================================== -->
+<title>Robert Burdsall — Controls &amp; Automation Engineering</title>
+<meta name="description" content="Robert Burdsall — Electrical &amp; Computer Engineering student at NC State with industry experience in PLC programming, electrical panel design, and machine vision integration, backed by a decade of software and operations experience. Seeking a Summer 2027 controls or automation engineering internship." />
+<meta name="author" content="Robert Burdsall" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Robert Burdsall — Controls &amp; Automation Engineering" />
+<meta property="og:description" content="ECE student at NC State. PLC programming, electrical panel design, and machine vision integration — with a software and operations background. Seeking a Summer 2027 controls internship." />
+<meta property="og:image" content="assets/img/og-image.png" />
+<meta property="og:url" content="https://robertburdsall.github.io/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#060709" />
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css" />
+<script>document.documentElement.classList.add("js");</script>
+</head>
+<body data-page="home">
+
+<div class="scroll-progress" aria-hidden="true"><span data-progress-bar></span></div>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div data-mount="nav"></div>
+
+<main id="main">
+
+  <div data-mount="hero"></div>
+
+  <!-- Scrolling scope trace. The path is 16 periods wide, the viewBox shows 8,
+       and it shifts exactly one period — so the loop is seamless. -->
+  <div class="wave" aria-hidden="true">
+    <svg viewBox="0 0 480 40" preserveAspectRatio="none">
+      <path d="M0,20 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0 q15,-20 30,0 q15,20 30,0" />
+    </svg>
+  </div>
+
+  <section class="timeline" id="timeline">
+    <div data-mount="timeline-head"></div>
+    <div class="timeline__layout">
+
+      <!-- Sticky year rail. main.js fills the year list from the entries. -->
+      <aside class="rail" data-rail aria-hidden="true">
+        <div class="rail__inner">
+          <div class="rail__now">
+            <span class="rail__now-label">Now viewing</span>
+            <span class="rail__now-year" data-rail-year>2015</span>
+          </div>
+          <div class="rail__track">
+            <div class="rail__line"><span class="rail__fill" data-rail-fill></span></div>
+            <ol class="rail__years"></ol>
+          </div>
+        </div>
+      </aside>
+
+      <div data-mount="timeline-entries"></div>
+    </div>
+  </section>
+
+  <div data-mount="angle"></div>
+  <div data-mount="skills"></div>
+  <div data-mount="facts"></div>
+  <div data-mount="leadership"></div>
+  <div data-mount="contact"></div>
+
+</main>
+
+<div data-mount="footer"></div>
+
+<noscript>
+  <p style="padding:24px;text-align:center;color:#b7bcc6;font-family:sans-serif">
+    This site uses JavaScript to assemble its content.
+    <a href="assets/resume.pdf" style="color:#ffd60a">Download the résumé PDF</a> instead.
+  </p>
+</noscript>
+
+<script src="content.js"></script>
+<script src="assets/js/render.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
