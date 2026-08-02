@@ -1,31 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Placeholder portrait">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#16140c"/>
-      <stop offset="1" stop-color="#08090c"/>
-    </linearGradient>
-    <linearGradient id="fg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#f59e0b"/>
-      <stop offset="1" stop-color="#ffd60a"/>
-    </linearGradient>
-  </defs>
-
-  <rect width="400" height="400" fill="url(#bg)"/>
-
-  <!-- circuit traces -->
-  <g opacity="0.14" stroke="#ffd60a" stroke-width="1" fill="none">
+  <rect width="400" height="400" fill="#131519"/>
+  <g opacity="0.10" stroke="#ffffff" stroke-width="1" fill="none">
     <path d="M0 100h400M0 200h400M0 300h400M100 0v400M200 0v400M300 0v400"/>
   </g>
-  <g opacity="0.5" fill="#ffd60a">
-    <circle cx="100" cy="100" r="2.5"/><circle cx="300" cy="100" r="2.5"/>
-    <circle cx="100" cy="300" r="2.5"/><circle cx="300" cy="300" r="2.5"/>
+  <g fill="none" stroke="#5b8db8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="200" cy="165" r="50"/>
+    <path d="M114 300c0-47 38-78 86-78s86 31 86 78"/>
   </g>
-
-  <g fill="none" stroke="url(#fg)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
-    <circle cx="200" cy="163" r="52"/>
-    <path d="M112 300c0-48 39-79 88-79s88 31 88 79"/>
-  </g>
-
-  <text x="200" y="352" font-family="ui-monospace, Menlo, monospace" font-size="15"
-        letter-spacing="3" fill="#7f8593" text-anchor="middle">ADD YOUR PHOTO</text>
+  <text x="200" y="352" font-family="ui-monospace, Menlo, monospace" font-size="13"
+        letter-spacing="2" fill="#767e89" text-anchor="middle">ADD YOUR PHOTO</text>
 </svg>

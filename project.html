@@ -4,13 +4,20 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- All visible text lives in content.js — edit that file, not this one. -->
-<title>Resume — Robert Burdsall</title>
-<meta name="description" content="Resume of Robert Burdsall — Electrical &amp; Computer Engineering student at NC State with experience in PLC programming, electrical panel design, machine vision integration, software development, and operations leadership." />
+<!-- ===================================================================
+     One shell serves every project. The project is chosen by the ?id=
+     in the URL, e.g. project.html?id=zipper-cap-inspection
+     Content comes from the `detail` block on each project in content.js.
 
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Resume — Robert Burdsall" />
-<meta property="og:description" content="Controls and automation engineering experience, backed by a software and operations background." />
+     The title below is a fallback; render.js replaces it with the real
+     project name once it knows which one is being shown.
+     =================================================================== -->
+<title>Project — Robert Burdsall</title>
+<meta name="description" content="Project detail — Robert Burdsall, controls and automation engineering." />
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Project — Robert Burdsall" />
+<meta property="og:description" content="Controls, automation, and software projects by Robert Burdsall." />
 <meta property="og:image" content="assets/img/og-image.png" />
 <meta name="theme-color" content="#0b0c0e" />
 
@@ -21,7 +28,7 @@
 <link rel="stylesheet" href="assets/css/style.css?v=9" />
 <script>document.documentElement.classList.add("js");</script>
 </head>
-<body data-page="resume">
+<body data-page="project">
 
 <div class="scroll-progress" aria-hidden="true"><span data-progress-bar></span></div>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -29,16 +36,7 @@
 <div data-mount="nav"></div>
 
 <main id="main">
-  <div data-mount="resume-head"></div>
-
-  <section class="resume">
-    <div class="container">
-      <div class="resume__grid">
-        <div data-mount="resume-aside"></div>
-        <div data-mount="resume-main"></div>
-      </div>
-    </div>
-  </section>
+  <div data-mount="project-detail"></div>
 </main>
 
 <div data-mount="footer"></div>
@@ -46,7 +44,7 @@
 <noscript>
   <p style="padding:24px;text-align:center;color:#a8b0ba;font-family:sans-serif">
     This site uses JavaScript to assemble its content.
-    <a href="assets/resume.pdf" style="color:#7ba9d0">Download the résumé PDF</a> instead.
+    <a href="projects.html" style="color:#7ba9d0">Back to all projects</a>.
   </p>
 </noscript>
 

@@ -18,8 +18,8 @@
   if (!S) {
     document.addEventListener("DOMContentLoaded", function () {
       document.body.insertAdjacentHTML("afterbegin",
-        '<div style="padding:120px 24px;text-align:center;font-family:sans-serif;color:#ffd60a">' +
-        "<h1>content.js didn't load</h1><p style='color:#b7bcc6'>Check that the file exists and has no syntax errors " +
+        '<div style="padding:120px 24px;text-align:center;font-family:sans-serif;color:#7ba9d0">' +
+        "<h1>content.js didn't load</h1><p style='color:#a8b0ba'>Check that the file exists and has no syntax errors " +
         "(press F12 → Console for the exact line).</p></div>");
     });
     return;
@@ -40,8 +40,10 @@
     grad:     '<path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.5V17c0 1.7 2.7 3 6 3s6-1.3 6-3v-6.5"/>',
     link:     '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/>',
     download: '<path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
-    arrow:    '<path d="M5 12h14m0 0-6-6m6 6-6 6"/>',
+    arrow:     '<path d="M5 12h14m0 0-6-6m6 6-6 6"/>',
+    arrowLeft: '<path d="M19 12H5m0 0 6-6m-6 6 6 6"/>',
     email:    '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 7 9-7"/>',
+    phone:    '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8 9.8a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.4 1.8.6 2.8.8A2 2 0 0 1 22 16.9Z"/>',
     copy:     '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',
     print:    '<path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/>'
   };
@@ -83,10 +85,11 @@
     // On the home page the contact anchor is local rather than cross-page.
     var ctaHref = active === "index.html" ? "#contact" : S.navCta.href;
 
+    var initials = (S.person.firstName[0] || "") + (S.person.lastName[0] || "");
     fill("nav",
       '<header class="nav" data-nav><div class="nav__inner">' +
         '<a class="nav__brand" href="index.html">' +
-          '<span class="nav__mark" aria-hidden="true">' + icon("bolt") + "</span>" +
+          '<span class="nav__mark" aria-hidden="true">' + initials + "</span>" +
           '<span class="nav__name">' + S.person.fullName + "</span>" +
         "</a>" +
         '<button class="nav__toggle" data-nav-toggle aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">' +
@@ -118,23 +121,48 @@
       (b.icon === "arrow" ? icon("arrow") : "") + "</a>";
   }
 
-  /* ---------- contact panel (shared by home + projects CTA) ---------- */
+  /* ---------- contact panel (shared by home + projects CTA) ----------
+     Deliberately offers more than one route. A bare mailto: link silently does
+     nothing on any machine without a mail client registered — which is most
+     machines where the owner uses webmail — so the address is also shown as
+     copyable text, with a Gmail web-compose link and a phone number alongside. */
+  function tel() { return S.person.phone.replace(/[^0-9+]/g, ""); }
+
   function contactPanel(c) {
+    var gmail = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(S.person.email);
     return '<section class="contact" id="contact"><div class="container">' +
-      '<div class="contact__panel" data-spotlight data-reveal>' +
-        '<div class="contact__glow" aria-hidden="true"></div>' +
+      '<div class="contact__panel" data-reveal>' +
+        
         '<p class="eyebrow">' + c.eyebrow + "</p>" +
         '<h2 class="section-title">' + c.title + '<span class="grad">' + c.titleAccent + "</span></h2>" +
         '<p class="section-sub">' + c.sub + "</p>" +
+
         '<div class="contact__actions">' +
-          '<a class="btn btn--primary" href="mailto:' + S.person.email + '">' + icon("email") + S.person.email + "</a>" +
+          '<a class="btn btn--primary" href="mailto:' + S.person.email + '">' +
+            icon("email") + S.person.email + "</a>" +
           '<button class="btn btn--ghost" data-copy="' + S.person.email + '">' + icon("copy") +
             '<span data-copy-label>' + c.copyLabel + "</span></button>" +
-          '<a class="btn btn--ghost" href="assets/resume.pdf" download>' + icon("download") + c.resumeLabel + "</a>" +
+          '<a class="btn btn--ghost" href="' + gmail + '" target="_blank" rel="noopener">' +
+            icon("link") + c.gmailLabel + "</a>" +
         "</div>" +
-        '<p class="contact__meta"><span>📍 ' + S.person.location +
-          ' <span class="muted">— ' + S.person.locationNote + "</span></span>" +
-          '<span class="sep">·</span><span>🛂 ' + S.person.workAuth + "</span></p>" +
+
+        '<div class="contact__actions">' +
+          '<a class="btn btn--ghost" href="tel:' + tel() + '">' + icon("phone") + S.person.phone + "</a>" +
+          '<button class="btn btn--ghost" data-copy="' + S.person.phone + '">' + icon("copy") +
+            '<span data-copy-label>' + c.copyPhoneLabel + "</span></button>" +
+          '<a class="btn btn--ghost" href="assets/resume.pdf" download>' +
+            icon("download") + c.resumeLabel + "</a>" +
+        "</div>" +
+
+        /* Plain labelled text rather than emoji — emoji read as informal on a
+           page a hiring manager is evaluating. */
+        '<p class="contact__meta">' +
+          "<span><dfn>Location</dfn> " + S.person.location + " — " + S.person.locationNote + "</span>" +
+          '<span class="sep">·</span>' +
+          "<span><dfn>Work authorization</dfn> " + S.person.workAuth + "</span></p>" +
+        (S.person.availability
+          ? '<p class="contact__meta contact__meta--note">' + S.person.availability + "</p>"
+          : "") +
       "</div></div></section>";
   }
 
@@ -153,37 +181,42 @@
 
     fill("hero",
       '<section class="hero" id="top">' +
-        '<canvas class="hero__canvas" data-circuit aria-hidden="true"></canvas>' +
-        '<div class="hero__glow" aria-hidden="true"></div>' +
+        '<div class="hero__grid" aria-hidden="true"></div>' +
         '<div class="hero__inner container">' +
           '<div class="hero__portrait" data-reveal>' +
-            '<div class="portrait"><div class="portrait__ring" aria-hidden="true"></div>' +
-              '<img src="' + h.photo + '" alt="' + h.photoAlt + '" width="360" height="360" /></div>' +
-            '<div class="portrait__badge"><span class="dot" aria-hidden="true"></span>' + h.badge + "</div>" +
+            '<div class="portrait">' +
+              '<img src="' + h.photo + '" alt="' + h.photoAlt + '" width="300" height="300" /></div>' +
+            (h.badges || [h.badge]).map(function (b) {
+              return '<div class="portrait__badge"><span class="dot" aria-hidden="true"></span>' + b + "</div>";
+            }).join("") +
           "</div>" +
           '<div class="hero__content">' +
             '<p class="hero__eyebrow" data-reveal>' + h.eyebrow + "</p>" +
-            '<h1 class="hero__title" data-reveal>' + S.person.firstName +
-              ' <span class="grad">' + S.person.lastName + "</span></h1>" +
-            '<p class="hero__role" data-reveal><span class="hero__role-static">' + h.roleStatic + "</span>" +
-              '<span class="hero__role-rotate" data-rotate data-words="' + h.roleWords.join("|") + '">' +
-                '<span class="hero__role-word">' + h.roleWords[0] + "</span>" +
-                '<span class="caret" aria-hidden="true"></span></span></p>' +
+            '<h1 class="hero__title" data-reveal>' + S.person.firstName + " " + S.person.lastName + "</h1>" +
+            '<p class="hero__tagline" data-reveal>' + h.tagline + "</p>" +
             '<p class="hero__bio" data-reveal>' + h.bio + "</p>" +
             '<div class="hero__actions" data-reveal>' + h.buttons.map(btn).join("") + "</div>" +
             '<ul class="hero__socials" data-reveal>' + socials + "</ul>" +
           "</div>" +
         "</div>" +
         '<a class="hero__scroll" href="#timeline" aria-label="Scroll to timeline">' +
-          '<span class="hero__scroll-text">' + h.scrollCue + "</span>" +
-          '<span class="hero__scroll-line" aria-hidden="true"></span></a>' +
+          '<span class="hero__scroll-line" aria-hidden="true"></span>' +
+          '<span class="hero__scroll-text">' + h.scrollCue + "</span></a>" +
       "</section>");
 
     /* timeline heading */
     fill("timeline-head", '<div class="section-head container">' + heading(H.timeline) + "</div>");
 
-    /* timeline entries */
-    var entries = H.timeline.entries.map(function (e) {
+    /* Timeline entries.
+       content.js lists these oldest-first because that's the natural way to
+       write and extend them — you append new experience to the bottom without
+       thinking about position. The page shows them newest-first, because that's
+       what a recruiter expects and it puts the strongest, most recent work at
+       the top. Set `timeline.order: "oldest-first"` in content.js to opt out. */
+    var ordered = H.timeline.entries.slice();
+    if (H.timeline.order !== "oldest-first") ordered.reverse();
+
+    var entries = ordered.map(function (e) {
       var linkHtml = e.link
         ? btn({ label: e.link.label, href: e.link.href, style: e.link.style || "ghost", small: true,
                 icon: e.link.style === "primary" ? "arrow" : "link" })
@@ -212,8 +245,8 @@
     var a = H.angle;
     fill("angle",
       '<section class="contact" style="padding-bottom:60px"><div class="container">' +
-        '<div class="contact__panel" data-spotlight data-reveal>' +
-          '<div class="contact__glow" aria-hidden="true"></div>' +
+        '<div class="contact__panel" data-reveal>' +
+          
           '<p class="eyebrow">' + a.eyebrow + "</p>" +
           '<h2 class="section-title">' + a.title + '<span class="grad">' + a.titleAccent + "</span></h2>" +
           '<p class="section-sub">' + a.body + "</p>" +
@@ -221,7 +254,7 @@
 
     /* skills */
     var cards = H.skills.cards.map(function (c) {
-      return '<div class="card card--spot" data-spotlight data-reveal>' +
+      return '<div class="card" data-reveal>' +
         '<div class="card__icon" aria-hidden="true">' + icon(c.icon) + "</div>" +
         "<h3>" + c.title + "</h3>" + chips(c.chips, "chips--lg") + "</div>";
     }).join("");
@@ -241,7 +274,7 @@
 
     /* leadership */
     var lead = H.leadership.cards.map(function (c) {
-      return '<div class="card card--spot" data-spotlight data-reveal' +
+      return '<div class="card" data-reveal' +
         (c.wide ? ' style="grid-column:1/-1"' : "") + ">" +
         '<div class="card__icon" aria-hidden="true">' + icon(c.icon) + "</div>" +
         "<h3>" + c.title + "</h3>" +
@@ -286,13 +319,13 @@
 
     fill("resume-aside",
       '<aside class="resume__aside">' +
-        '<div class="card card--spot" data-spotlight data-reveal><h3>' + R.glance.title + "</h3>" +
+        '<div class="card" data-reveal><h3>' + R.glance.title + "</h3>" +
           '<ul class="tl-item__points" style="margin:0">' +
           R.glance.items.map(function (i) { return "<li>" + i + "</li>"; }).join("") + "</ul></div>" +
-        '<div class="card card--spot" data-spotlight data-reveal><h3>' + R.strengths.title + "</h3>" + bars + "</div>" +
-        '<div class="card card--spot" data-spotlight data-reveal><h3>' + R.certifications.title + "</h3>" +
+        '<div class="card" data-reveal><h3>' + R.strengths.title + "</h3>" + bars + "</div>" +
+        '<div class="card" data-reveal><h3>' + R.certifications.title + "</h3>" +
           '<ul class="tl-item__points" style="margin:0">' + certs + "</ul></div>" +
-        '<div class="card card--spot" data-spotlight data-reveal><h3>Contact</h3>' +
+        '<div class="card" data-reveal><h3>Contact</h3>' +
           '<ul class="tl-item__points" style="margin:0">' +
             '<li><a href="mailto:' + S.person.email + '">' + S.person.email + "</a></li>" +
             '<li><a href="tel:' + S.person.phone.replace(/[^0-9+]/g, "") + '">' + S.person.phone + "</a></li>" +
@@ -362,16 +395,31 @@
             return '<div class="proj__metric"><b>' + m.value + "</b><span>" + m.label + "</span></div>";
           }).join("") + "</div>"
         : "";
-      var links = (p.links && p.links.length)
-        ? '<div class="proj__links">' + p.links.map(function (l) {
-            return '<a class="proj__link" href="' + l.href + '" target="_blank" rel="noopener">' +
-              icon(l.icon || "link") + l.label + "</a>";
-          }).join("") + "</div>"
-        : "";
-      return '<article class="proj card card--spot" data-spotlight data-tech="' + p.tags.join(",") + '" data-reveal>' +
+      /* A project with a `detail` block gets its own page. The title becomes the
+         link rather than wrapping the whole card, so the external Source/Live
+         links inside don't end up nested inside another anchor. */
+      var href = p.detail ? projectHref(p) : null;
+      var linkList = (p.links || []).map(function (l) {
+        return '<a class="proj__link" href="' + l.href + '" target="_blank" rel="noopener">' +
+          icon(l.icon || "link") + l.label + "</a>";
+      });
+      if (href) {
+        linkList.unshift('<a class="proj__link proj__link--primary" href="' + href + '">' +
+          P.detailLabels.viewLabel + icon("arrow") + "</a>");
+      }
+      var links = linkList.length ? '<div class="proj__links">' + linkList.join("") + "</div>" : "";
+
+      var thumbInner = href
+        ? '<a class="proj__thumb-link" href="' + href + '" tabindex="-1" aria-hidden="true">' + thumb + "</a>"
+        : thumb;
+      var title = href
+        ? '<h3 class="proj__title"><a href="' + href + '">' + p.title + "</a></h3>"
+        : '<h3 class="proj__title">' + p.title + "</h3>";
+
+      return '<article class="proj card" data-tech="' + p.tags.join(",") + '" data-reveal>' +
         '<div class="proj__thumb">' +
-          (p.featured ? '<span class="proj__featured">Featured</span>' : "") + thumb + "</div>" +
-        '<h3 class="proj__title">' + p.title + "</h3>" +
+          (p.featured ? '<span class="proj__featured">Featured</span>' : "") + thumbInner + "</div>" +
+        title +
         '<p class="proj__desc">' + p.desc + "</p>" +
         metrics + chips(p.chips) + links + "</article>";
     }).join("");
@@ -386,8 +434,8 @@
     var c = P.cta;
     fill("projects-cta",
       '<section class="contact"><div class="container">' +
-        '<div class="contact__panel" data-spotlight data-reveal>' +
-          '<div class="contact__glow" aria-hidden="true"></div>' +
+        '<div class="contact__panel" data-reveal>' +
+          
           '<p class="eyebrow">' + c.eyebrow + "</p>" +
           '<h2 class="section-title">' + c.title + '<span class="grad">' + c.titleAccent + "</span></h2>" +
           '<p class="section-sub">' + c.sub + "</p>" +
@@ -397,11 +445,130 @@
           "</div></div></div></section>");
   }
 
+  /* =========================================================================
+     PROJECT DETAIL  —  project.html?id=<slug>
+
+     One shell serves every project. This keeps the site to a single set of
+     files with no build step, and every project still gets a real, linkable
+     URL you can put on a résumé or send to a recruiter.
+
+     Tradeoff worth knowing: because the page is assembled in the browser, the
+     <title> and og: tags in project.html are shared. We set document.title
+     below so the browser tab and Google are correct, but link-preview crawlers
+     (Slack, LinkedIn) don't run JavaScript and will show the generic
+     description. If that ever matters, the fix is one real .html file per
+     project — more files, better previews.
+     ========================================================================= */
+  function projectHref(p) { return "project.html?id=" + encodeURIComponent(p.slug); }
+
+  function renderProjectDetail() {
+    var P = S.projects;
+    var L = P.detailLabels || {};
+    var id = new URLSearchParams(window.location.search).get("id");
+    var idx = -1;
+    P.items.forEach(function (p, i) { if (p.slug === id) idx = i; });
+    var p = idx > -1 ? P.items[idx] : null;
+
+    if (!p || !p.detail) {
+      document.title = "Project not found — " + S.person.fullName;
+      fill("project-detail",
+        '<section class="page-head"><div class="container">' +
+          '<p class="eyebrow">404</p>' +
+          '<h1 class="section-title">' + (L.notFound || "That project doesn't exist.") + "</h1>" +
+          '<div class="contact__actions" style="margin-top:24px">' +
+            '<a class="btn btn--primary" href="projects.html">' + (L.notFoundCta || "View all projects") + "</a>" +
+          "</div></div></section>");
+      return;
+    }
+
+    var d = p.detail;
+    var plain = p.title.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&");
+    document.title = plain + " — " + S.person.fullName;
+    var desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute("content", plain + " — " + p.desc.replace(/<[^>]+>/g, "").slice(0, 150));
+
+    var hero = p.image
+      ? '<img src="' + p.image + '" alt="' + plain + '" />'
+      : '<span class="proj__thumb-placeholder">' + (p.imagePlaceholder || "IMAGE 1600×900") + "</span>";
+
+    var metrics = (p.metrics && p.metrics.length)
+      ? '<div class="pd__metrics">' + p.metrics.map(function (m) {
+          return '<div class="proj__metric"><b>' + m.value + "</b><span>" + m.label + "</span></div>";
+        }).join("") + "</div>"
+      : "";
+
+    var sections = (d.sections || []).map(function (s) {
+      return '<section class="pd__section" data-reveal>' +
+        "<h2>" + s.heading + "</h2>" +
+        (s.body ? "<p>" + s.body + "</p>" : "") +
+        (s.points ? points(s.points, "pd__points") : "") +
+      "</section>";
+    }).join("");
+
+    var specs = (d.specs && d.specs.length)
+      ? '<dl class="pd__specs">' + d.specs.map(function (s) {
+          return "<dt>" + s.label + "</dt><dd>" + s.value + "</dd>";
+        }).join("") + "</dl>"
+      : "";
+
+    /* previous / next, wrapping around the list */
+    function nav(i, label, cls) {
+      var q = P.items[(i + P.items.length) % P.items.length];
+      if (!q || !q.detail || q === p) return "";
+      return '<a class="pd__nav-item ' + cls + '" href="' + projectHref(q) + '">' +
+        '<span class="pd__nav-label">' + label + "</span>" +
+        '<span class="pd__nav-title">' + q.title + "</span></a>";
+    }
+
+    fill("project-detail",
+      '<article class="pd">' +
+        '<div class="container">' +
+          '<a class="pd__back" href="projects.html">' + icon("arrowLeft") + (L.back || "All projects") + "</a>" +
+
+          '<header class="pd__head" data-reveal>' +
+            '<p class="eyebrow">' + (d.context || "") + "</p>" +
+            '<h1 class="pd__title">' + p.title + "</h1>" +
+            (d.summary ? '<p class="pd__summary">' + d.summary + "</p>" : "") +
+            chips(p.chips) +
+          "</header>" +
+
+          '<div class="pd__media" data-reveal>' + hero + "</div>" +
+          metrics +
+
+          '<div class="pd__body">' +
+            '<div class="pd__main">' + sections + "</div>" +
+            '<aside class="pd__aside" data-reveal>' +
+              '<div class="card">' +
+                "<h3>" + (L.specs || "At a glance") + "</h3>" +
+                (d.role ? '<p class="pd__role"><span>' + (L.role || "Role") + "</span>" + d.role + "</p>" : "") +
+                specs +
+                (p.links && p.links.length
+                  ? '<div class="pd__aside-links">' + p.links.map(function (l) {
+                      return '<a class="proj__link" href="' + l.href + '" target="_blank" rel="noopener">' +
+                        icon(l.icon || "link") + l.label + "</a>";
+                    }).join("") + "</div>"
+                  : "") +
+              "</div>" +
+            "</aside>" +
+          "</div>" +
+
+          '<nav class="pd__nav" aria-label="Other projects">' +
+            nav(idx - 1, L.prev || "Previous", "pd__nav-item--prev") +
+            nav(idx + 1, L.next || "Next", "pd__nav-item--next") +
+          "</nav>" +
+        "</div>" +
+      "</article>");
+  }
+
   /* ---------- dispatch ---------- */
   var page = document.body.getAttribute("data-page");
-  renderNav(page === "home" ? "index.html" : page === "resume" ? "resume.html" : "projects.html");
+  renderNav(
+    page === "home" ? "index.html" :
+    page === "resume" ? "resume.html" : "projects.html"
+  );
   if (page === "home")     renderHome();
   if (page === "resume")   renderResume();
   if (page === "projects") renderProjects();
+  if (page === "project")  renderProjectDetail();
   renderFooter();
 })();

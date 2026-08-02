@@ -37,13 +37,16 @@ window.SITE = {
     fullName:  "Robert Burdsall",
 
     email:    "robertaburdsall@gmail.com",
-    phone:    "704-305-0517",
+    phone:    "+1 (704) 305-0517",
     linkedin: "https://linkedin.com/in/robertburdsall",
     github:   "https://github.com/robertburdsall",
 
     location:      "Raleigh, NC",
     locationNote:  "open to relocation",
-    workAuth:      "Authorized to work in the U.S."
+    workAuth:      "Authorized to work in the U.S.",
+
+    /* Shown in the contact panel and on the resume page. */
+    availability:  "Also open to part-time work in Raleigh during the fall &amp; spring semesters"
   },
 
   /* Top-right navigation links */
@@ -55,7 +58,7 @@ window.SITE = {
   navCta: { label: "Contact", href: "index.html#contact" },
 
   footer: {
-    note: "Built from scratch — no template."
+    note: "Designed and built from scratch."
   },
 
   /* ==========================================================================
@@ -67,15 +70,10 @@ window.SITE = {
     hero: {
       eyebrow: "Hello — I'm",
 
-      /* The rotating line. First item shows first, then it cycles forever. */
-      roleStatic: "I build",
-      roleWords: [
-        "machine vision inspection systems",
-        "electrical control panels",
-        "PLC logic for production machinery",
-        "software that runs on the factory floor",
-
-      ],
+      /* The line under your name. One sentence — keep it factual. */
+      tagline:
+        "Controls &amp; automation engineering — PLC programming, electrical panel " +
+        "design, and machine vision integration.",
 
       /* Your intro paragraph */
       bio:
@@ -90,8 +88,11 @@ window.SITE = {
         "of a control system: the panel and the code running on it. Looking for a " +
         "<strong>Summer 2027 controls or automation engineering internship</strong>.",
 
-      /* The green-dot pill under your photo */
-      badge: "Open to Summer 2027 internships",
+      /* The pills under your photo. Add or remove lines freely. */
+      badges: [
+        "Open to Summer 2027 internships",
+        "Part-time in Raleigh — Fall &amp; Spring"
+      ],
 
       /* Your photo. Put the file in assets/img/ and change the name here. */
       photo:    "assets/img/profilephoto.jpg",
@@ -102,7 +103,7 @@ window.SITE = {
         { label: "View Projects",   href: "projects.html",     style: "ghost",   icon: "arrow" }
       ],
 
-      scrollCue: "Scroll through my story"
+      scrollCue: "View experience"
     },
 
     /* ---- Timeline section heading ---- */
@@ -111,11 +112,19 @@ window.SITE = {
       title: "Experience ",
       titleAccent: "Timeline",
       sub:
-        "Ten years, from a Boy Scout troop and a Minecraft server to the production floor. " +
-        "Scroll to move through it, or jump to a year using the rail.",
+        "Most recent first — a decade of building, from the production floor back to a " +
+        "Scout troop and a Minecraft server. Scroll through it, or jump to a year using the rail.",
+
+      /* Display order. Leave this out (or set "newest-first") to show the most
+         recent entry at the top, which is what employers expect. Set it to
+         "oldest-first" to run the timeline forward in time instead. */
+      order: "newest-first",
 
       /* ======================================================================
-         TIMELINE ENTRIES — oldest first.
+         TIMELINE ENTRIES — write these OLDEST FIRST.
+
+         The page reverses them for display (see `order` above), so you just
+         append new experience to the bottom of this list as it happens.
 
          year  : drives the left-hand rail. Repeats are fine; the rail shows
                  each year once.
@@ -144,7 +153,7 @@ window.SITE = {
         },
 
         {
-          year: "2020", type: "project", tag: "Where it started",
+          year: "2020", type: "project", tag: "Early work",
           date: "2020 — 2022",
           title: "Minecraft Server &amp; Java Plugins",
           titleNote: "(Sourceadmin)",
@@ -322,11 +331,11 @@ window.SITE = {
         {
           year: "2027", type: "future", tag: "Next",
           date: "Summer 2027",
-          title: "Your team?",
+          title: "Seeking a Controls Engineering Internship",
           desc:
-            "I'm looking for a Summer 2027 controls or automation engineering internship " +
-            "where I can own a real panel, a real machine, or a real line. If that sounds " +
-            "like your team, I'd love to talk.",
+            "Looking for a Summer 2027 controls or automation engineering internship with " +
+            "ownership of a panel, a machine, or a line — ideally in manufacturing, energy, " +
+            "or industrial automation.",
           link: { label: "Get in touch", href: "#contact", style: "primary" }
         },
 
@@ -383,11 +392,15 @@ window.SITE = {
     },
 
     /* ---- The four big numbers.  count = the number it counts up to. ---- */
+    /* Pick numbers that are big enough to land at a glance AND mean something.
+       "5+ panels" is real but reads small next to six figures, so the panel
+       work is stated as a rate instead — 7,200 parts an hour is the same
+       machine, described the way a plant manager would describe it. */
     facts: [
-      { count: 120, suffix: "",  label: "Caps/min inspection rate" },
-      { count: 5,   suffix: "+", label: "Control panels designed &amp; wired" },
-      { count: 100, suffix: "K", label: "Unique players on my server" },
-      { count: 175, suffix: "+", label: "Students taught &amp; mentored" }
+      { count: 7200, suffix: "",    label: "Parts/hr inspected by a machine I designed" },
+      { count: 100,  suffix: "K",   label: "Users served by systems I built &amp; ran" },
+      { count: 250,  suffix: "K+",  label: "Views on technical tutorials I produced" },
+      { count: 175,  suffix: "+",   label: "Students taught &amp; mentored" }
     ],
 
     /* ---- Leadership & service ---- */
@@ -444,9 +457,17 @@ window.SITE = {
       eyebrow: "Let's talk",
       title: "Currently interviewing for<br />",
       titleAccent: "Summer 2027 internships",
-      sub: "Fastest way to reach me is email — I reply within a day. Résumé is one click away.",
-      copyLabel: "Copy email",
-      resumeLabel: "Résumé (PDF)"
+      sub:
+        "Email or text me — I reply within a day. I'm also open to part-time work in the " +
+        "Raleigh area during the fall and spring semesters.",
+      /* Button labels. "Compose in Gmail" is a fallback for anyone whose
+         computer has no mail app registered, where mailto: does nothing. */
+      emailLabel:   "Email me",
+      gmailLabel:   "Compose in Gmail",
+      copyLabel:    "Copy email",
+      phoneLabel:   "Call or text",
+      copyPhoneLabel: "Copy number",
+      resumeLabel:  "Résumé (PDF)"
     }
   },
 
@@ -464,6 +485,7 @@ window.SITE = {
       title: "At a glance",
       items: [
         "<strong>Seeking:</strong> Controls / Automation Internship, Summer 2027",
+        "<strong>Also open to:</strong> part-time work in Raleigh, fall &amp; spring semesters",
         "<strong>Major:</strong> B.E. Electrical &amp; Computer Engineering",
         "<strong>School:</strong> NC State University",
         "<strong>GPA:</strong> 3.5",
@@ -674,7 +696,7 @@ window.SITE = {
       ]
     },
 
-    pdfTitle: "The PDF"
+    pdfTitle: "Robert Burdsall Resume"
   },
 
   /* ==========================================================================
@@ -684,7 +706,7 @@ window.SITE = {
     eyebrow: "Selected work",
     title: "Recent ",
     titleAccent: "projects",
-    sub: "Systems I've built — on a production floor, on a competition robot, and on my own.",
+    sub: "Systems I've built — on a production floor, robotics team, or on my own.",
 
     /* Filter buttons. `key` must match a word in each project's `tags` list. */
     filters: [
@@ -699,17 +721,23 @@ window.SITE = {
 
     /* ======================================================================
        PROJECT CARDS.
+       slug    : the URL for this project's own page — project.html?id=SLUG
+                 Keep it lowercase with dashes. Changing it breaks old links.
        tags    : which filters this shows under
        image   : path to a 1600x900 image, or leave "" for the placeholder box
        metrics : the little number blocks
        links   : optional buttons
+       detail  : the dedicated page. role / context / summary / sections /
+                 specs. Leave `detail` out entirely and the card simply won't
+                 link anywhere.
        ====================================================================== */
     items: [
       {
+        slug: "zipper-cap-inspection",
         title: "Zipper Cap Inspection Machine",
         tags: ["automation", "vision", "electrical"],
         featured: true,
-        image: "", imagePlaceholder: "MACHINE PHOTO 1600×900",
+        image: "assets/img/ideal.png", imagePlaceholder: "MACHINE PHOTO 1600×900",
         desc:
           "Led end-to-end design of a production inspection machine at IDEAL Fastener. " +
           "Trained Keyence vision inspection drives vacuum ejection and solenoid valve " +
@@ -719,26 +747,124 @@ window.SITE = {
           { value: "120", label: "CAPS/MIN" },
           { value: "End-to-end", label: "DESIGN OWNERSHIP" }
         ],
-        chips: ["Omron PLC", "Keyence Vision", "DOPSoft HMI", "Solenoid Sequencing"]
+        chips: ["Omron PLC", "Keyence Vision", "DOPSoft HMI", "Solenoid Sequencing"],
+
+        detail: {
+          role: "Lead — end-to-end design",
+          context: "IDEAL Fastener Corporation · Oxford, NC · Summer 2026",
+          summary:
+            "A production machine that inspects zipper caps at 120 per minute, ejects the " +
+            "defective ones, and tracks good/bad rate for the operators running the line. I " +
+            "owned it from concept through commissioning — the mechanical sequencing, the " +
+            "electrical build, the PLC logic, the vision training, and the operator interface.",
+          sections: [
+            {
+              heading: "The problem",
+              body:
+                "Zipper cap defects were being caught downstream rather than at the source, which " +
+                "meant bad parts travelled further into the process before anyone noticed. " +
+                "The line needed inspection fast enough to keep up with production and " +
+                "automatic rejection so an operator wasn't sorting by hand."
+            },
+            {
+              heading: "What I built",
+              body:
+                "A single integrated station: as the zipper caps move around the vibrating bowl, " +
+                "a stepper motor separates them in order for the trained Keyance AI Camera to reliably " +
+                "detect any defects. the PLC then uses the results, and a solenoid-driven vacuum ejector " +
+                "removes anything that fails — all sequenced quickly enough to keep the assembly process moving.",
+              points: [
+                "Trained the Keyence vision inspection to recognise good and defective caps, defining the inspection criteria from sample parts",
+                "Wrote the Omron PLC logic in CX-Programmer to sequence detection, ejection timing, and the interlocks between them",
+                "Built the vacuum ejection and solenoid valve sequencing that physically removes failed parts from the stream",
+                "Designed a DOPSoft HMI so operators can see status, counts, and rate without needing the programming software",
+                "Added PLC-driven quality tracking with alarm functionality on good/bad rate, so a rising defect rate surfaces immediately",
+                "Controlled a stepper motor from Omron PLC logic, utilizing pulses and allowing for variable speeds"
+              ]
+            },
+            {
+              heading: "Result",
+              body:
+                "The machine runs on the production floor at 120 caps per minute — 7,200 an " +
+                "hour — with inspection, rejection, and rate monitoring handled automatically " +
+                "rather than by an operator watching the line.",
+              points: [
+                "120 caps/min sustained inspection rate",
+                "Defect rejection moved from a downstream manual catch to inline and automatic",
+                "Operators get live good/bad rate with alarms instead of after-the-fact reporting"
+              ]
+            }
+          ],
+          specs: [
+            { label: "Throughput",     value: "120 caps/min (7,200/hr)" },
+            { label: "Controller",     value: "Omron PLC, programmed in CX-Programmer" },
+            { label: "Vision",         value: "Keyence, trained inspection criteria" },
+            { label: "Operator HMI",   value: "DOPSoft" },
+            { label: "Rejection",      value: "Vacuum ejection, solenoid valve sequencing" },
+            { label: "Monitoring",     value: "PLC quality tracking with good/bad rate alarms" }
+          ]
+        }
       },
       {
-        title: "Machine Vision Retrofit",
+        slug: "machine-vision-upgrade",
+        title: "Machine Vision Upgrade",
         tags: ["vision", "automation"],
-        image: "", imagePlaceholder: "VISION SETUP 1600×900",
+        image: "assets/img/ideal.png", imagePlaceholder: "VISION SETUP 1600×900",
         desc:
-          "Configured and trained Keyence IV3/IV4 vision systems on three existing floor " +
+          "Configured, wired, and trained Keyence IV3/IV4 vision systems on three existing floor " +
           "machines — defining inspection criteria and teaching defect recognition — to add " +
           "real-time quality detection to equipment that previously had none.",
         metrics: [
           { value: "3", label: "MACHINES UPGRADED" },
           { value: "Real-time", label: "DEFECT DETECTION" }
         ],
-        chips: ["Keyence IV3/IV4", "SmartNavigator", "Defect Recognition"]
+        chips: ["Keyence IV3/IV4", "SmartNavigator", "Defect Recognition"],
+
+        detail: {
+          role: "Vision configuration &amp; training",
+          context: "IDEAL Fastener Corporation · Oxford, NC · Summer 2026",
+          summary:
+            "Three machines already on the floor were producing parts with no automated " +
+            "quality check. Rather than replace them, I installed Keyence IV3/IV4 vision " +
+            "systems onto each one so defects are caught as they happen. In order to control " +
+            "those cameras, I installed a LattePanda Windows 10 Dev Computer, alongside some " +
+            "relays to interact with the existing PLC infastructure.",
+          sections: [
+            {
+              heading: "The approach",
+              body:
+                "This same upgrade had been done to multiple machines before, so I had examples "+
+                "to work off of. We planned on pulling power from the existing power supplies, "+
+                "for both the 24V and higher voltage AC power, and then powering the cameras, "+
+                "their controllers, the dev computer, and the relays from there.",
+              points: [
+                "Mounted and configured Keyence IV3/IV4 vision sensors on three existing production machines",
+                "Defined inspection criteria per machine from real sample parts",
+                "Trained defect recognition using Keyence SmartNavigator, iterating until the pass/fail boundary held against normal part variation",
+                "Integrated the vision result into each machine's existing control scheme",
+              ]
+            },
+            {
+              heading: "Result",
+              body:
+                "Three machines that shipped with no inspection capability now flag defects " +
+                "in real time, without replacing the underlying equipment. Additionally, a new" +
+                "sorting method now allows for easier movement of cut pieces, reducing operator work."
+            }
+          ],
+          specs: [
+            { label: "Machines upgraded", value: "3 existing production machines" },
+            { label: "Vision hardware",   value: "Keyence IV3 / IV4" },
+            { label: "Configuration",     value: "Keyence SmartNavigator" },
+            { label: "Detection",         value: "Real-time, inline" }
+          ]
+        }
       },
       {
+        slug: "production-control-panels",
         title: "Production Control Panels",
         tags: ["electrical", "automation"],
-        image: "", imagePlaceholder: "PANEL PHOTO 1600×900",
+        image: "assets/img/ideal.png", imagePlaceholder: "PANEL PHOTO 1600×900",
         desc:
           "Designed and fabricated 5+ electrical control panels for production machinery — " +
           "full wiring assembly including relays, power supplies, DIN rail, disconnects, " +
@@ -748,12 +874,59 @@ window.SITE = {
           { value: "5+", label: "PANELS BUILT" },
           { value: "Full", label: "WIRING ASSEMBLY" }
         ],
-        chips: ["TinyCAD", "DIN Rail", "Relays", "Sensors", "Disconnects"]
+        chips: ["TinyCAD", "DIN Rail", "Relays", "Sensors", "Disconnects"],
+
+        detail: {
+          role: "Design &amp; fabrication",
+          context: "IDEAL Fastener Corporation · Oxford, NC · Summer 2026",
+          summary:
+            "Five-plus control panels for production machinery, designed and physically built. " +
+            "Each one was documented in TinyCAD so the next panel could " +
+            "be replicated from a drawing rather than from memory.",
+          sections: [
+            {
+              heading: "What the work involved",
+              body:
+                "Each panel delt with different " +
+                "voltage requirements, such as 120V for lower efficiency machines, 220 for production " +
+                "machines, and even 3-phase 220V. I had to cut dinrail and wire shielding to match requirements. "+ 
+                "From there I would have a 24V DC Power Supply deliver power to whatever the job required, " +
+                "such as PLCs, Camera Vision Controllers, Solenoids, Motor Controllers, and other job-specific requirements. "+
+                "Adhered to traditional wiring standards, such as using disconnects, relays, labeling both ends, etc.",
+                
+              points: [
+                "Laid out and wired DIN rail assemblies: relays, power supplies, and disconnects",
+                "Terminated field devices — proximity sensors, laser sensors, and solenoid valves",
+                "Produced TinyCAD schematics for each build so panels could be replicated and maintained",
+                "Handled the full assembly rather than handing a drawing to someone else to build"
+              ]
+            },
+            {
+              heading: "Why the documentation mattered",
+              body:
+                "An undocumented panel is a liability the moment the person who built it " +
+                "leaves. Drawing each build in TinyCAD meant the plant kept a reference for " +
+                "replication and for troubleshooting after my internship ended. " +
+                "Additionally, it helped me keep my wiring organized and intentional from the beginning -" +
+                "whenever I had any questions about design choices, I could check what I had already decided " +
+                "would work."
+
+            }
+          ],
+          specs: [
+            { label: "Panels built",   value: "5+" },
+            { label: "Scope",          value: "Design, layout, and full wiring assembly" },
+            { label: "Components",     value: "Relays, power supplies, DIN rail, disconnects" },
+            { label: "Field devices",  value: "Proximity sensors, laser sensors, solenoid valves" },
+            { label: "Documentation",  value: "TinyCAD schematics for replication" }
+          ]
+        }
       },
       {
+        slug: "frc-9150-robot-control",
         title: "FRC Team 9150 — Robot Control Software",
         tags: ["robotics", "software", "vision"],
-        image: "", imagePlaceholder: "ROBOT PHOTO 1600×900",
+        image: "assets/img/ProteusAtComp.jpg", imagePlaceholder: "ROBOT PHOTO 1600×900",
         desc:
           "Full robot control software in Java using WPILib, with integrated vision and dual " +
           "scoring systems. Now programming lead for the team, teaching the next cohort of " +
@@ -763,9 +936,68 @@ window.SITE = {
           { value: "25+", label: "STUDENTS MENTORED" }
         ],
         chips: ["Java", "WPILib", "Vision", "Mentorship"],
-        links: [{ label: "Source", href: "https://github.com/robertburdsall", icon: "code" }]
+        links: [{ label: "Source", href: "https://github.com/robertburdsall", icon: "code" }],
+
+        detail: {
+          role: "Programming lead &amp; mentor",
+          context: "FIRST Robotics Competition, Team 9150 · NCSSM · Jan 2024 — Present",
+          summary:
+            "The full control software for a competition robot, written in Java on WPILib — " +
+            "drive, vision, and two independent scoring mechanisms. The team <a href=https://labyrobots.org>Labrynth Robotics </a>" +
+            "finished with " +
+            "the third-highest scoring performance in North Carolina. I now lead the " +
+            "programming group and teach the students how to code & how to make the robot work!",
+          sections: [
+            {
+              heading: "The system",
+              body:
+                "I joined FRC 3 weeks before the first competition, with no previous robotics experience. " +
+                "The team that I joined had no programmers, and had a mechanically sound robot - all I had to do "+
+                "was figure out how to program it! I was able to get us running in 3 weeks and had to learn everything" +
+                "from PID Controllers to Limelight vision integration.",
+              points: [
+                "Designed and implemented the complete robot control software in Java using WPILib",
+                "Integrated Limelight vision for target acquisition and alignment",
+                "Built two independent scoring systems that operate without interfering with each other",
+                "Owned system architecture, debugging, and performance optimization across the codebase",
+                "Controlled Brushless motors utilizing PID Controllers",
+                "Programmed autonomous scoring methods, relying on vision and custom programmed scoring commands"
+              ]
+            },
+            {
+              heading: "Leading the team",
+              body:
+                "Once I graduated, I left behind a team that had zero programmers." +
+                "The team was able to recruit some interested people, and through virtural teaching sessions, "+
+                "I was able to teach the team how to program Java for Robotics! I helped them design 2026's code, but "+
+                "for the most part, it was all them this past year!",
+              points: [
+                "Lead Mentor for 25+ students, teaching Java, WPILib, and robotics programming fundamentals",
+                "Set the architecture and review standards the team codes against",
+                "Fully programmed the 2025 Robot, utilizing WPILib, Swerve, Photon, PID Controllers, and specific motor controlls."
+              ]
+            },
+            {
+              heading: "Why it's relevant to controls",
+              body:
+                "A competition robot is a control system with sensors, actuators, state " +
+                "machines, and failure modes that show up under load. The reasoning transfers " +
+                "directly to industrial automation — the difference is the environment, not the " +
+                "problem. Through my leadership, quick learning, and persistence to troubleshoot and solve problems, "+
+                "the robotics team was able to thrive - and that's something I can bring to any work environment as well."
+            }
+          ],
+          specs: [
+            { label: "Result",     value: "3rd-highest scoring performance in North Carolina" },
+            { label: "Language",   value: "Java" },
+            { label: "Framework",  value: "WPILib, CTRE-Phoenix, REV" },
+            { label: "Subsystems", value: "Drive, vision, dual scoring mechanisms" },
+            { label: "Team role",  value: "Programming lead; mentor to 25+ students" }
+          ]
+        }
       },
       {
+        slug: "minecraft-server-plugins",
         title: "Minecraft Server &amp; Java Plugins",
         tags: ["software", "content"],
         image: "", imagePlaceholder: "SERVER / PLUGIN SCREENSHOT 1600×900",
@@ -779,9 +1011,59 @@ window.SITE = {
           { value: "1.5K", label: "SUBSCRIBERS" },
           { value: "127",  label: "VIDEOS" }
         ],
-        chips: ["Java", "Plugin Development", "Server Administration", "Live Ops"]
+        chips: ["Java", "Plugin Development", "Server Administration", "Live Ops"],
+
+        detail: {
+          role: "Built and operated it",
+          context: "Independent · 2020 — 2022",
+          summary:
+            "A public Minecraft server that reached 100,000 unique players, running on custom " +
+            "Java plugins I wrote, promoted through a gaming channel with 1.5K subscribers " +
+            "and 127 videos. This is where I learned to program, and it led directly to a " +
+            "paid operations role at a hosting company.",
+          sections: [
+            {
+              heading: "The software",
+              body:
+                "Minecraft server plugins are ordinary Java against an event-driven API. " +
+                "Gameplay features, moderation tooling, and administrative commands all had " +
+                "to run inside a tick budget on a server with hundreds of concurrent players.",
+              points: [
+                "Wrote custom server-side Java plugins for gameplay mechanics, moderation, and administration",
+                "Learned my first programming language out of necessity - if I didn't program, the server would go down!"
+              ]
+            },
+            {
+              heading: "The operations",
+              body:
+                "The harder lesson was that software running for other people is a different " +
+                "discipline from software that runs. Downtime and mistakes had a live audience, " +
+                "one that was quick to point out any mistakes that I made in my learning journey. Helpful, but stressful.",
+              points: [
+                "Operated live infrastructure for a community of 100,000 unique players",
+                "Handled moderation, uptime, and the support load that comes with a public service",
+                "Grew and promoted the community through a gaming channel — 1.5K subscribers, 127 videos"
+              ]
+            },
+            {
+              heading: "Where it led",
+              body:
+                "The audience and the operational track record turned into a paid role at " +
+                "Cryhosting, where I became Director of NA Operations — managing servers, " +
+                "support staff, and backend financial systems while still in high school."
+            }
+          ],
+          specs: [
+            { label: "Unique players", value: "100,000" },
+            { label: "Language",       value: "Java" },
+            { label: "Scope",          value: "Plugin development, server administration, live operations" },
+            { label: "Channel",        value: "1.5K subscribers, 127 videos" },
+            { label: "Led to",         value: "Director of NA Operations at Cryhosting LLC" }
+          ]
+        }
       },
       {
+        slug: "highpurity-tutorials",
         title: "Highpurity — Tutorial Channel &amp; Site",
         tags: ["content", "software"],
         image: "", imagePlaceholder: "CHANNEL / TUTORIAL SCREENSHOT 1600×900",
@@ -797,9 +1079,56 @@ window.SITE = {
         ],
         chips: ["Technical Writing", "Documentation", "Server Administration", "Video Production"],
         /* Delete the links line below if you'd rather not surface the channel. */
-        links: [{ label: "Visit channel", href: "https://youtube.com/@highpurity", icon: "link" }]
+        links: [{ label: "Visit channel", href: "https://youtube.com/@highpurity", icon: "link" }],
+
+        detail: {
+          role: "Wrote, produced, and published it",
+          context: "Independent · 2021 — 2023",
+          summary:
+            "A professional educational channel teaching Minecraft server " +
+            "administration, with a companion website carrying a written tutorial matched to " +
+            "every video. 31 videos, over 250,000 total views, with the most-watched tutorial " +
+            "reaching 68,000.",
+          sections: [
+            {
+              heading: "What it covered",
+              body:
+                "The topics were genuine systems administration rather than gameplay — the " +
+                "kind of problems anyone running a service hits.",
+              points: [
+                "Voice-chat integration and configuration",
+                "Live server mapping",
+                "Chunk pregeneration as a lag-mitigation strategy",
+                "DDoS protection and edge filtering"
+              ]
+            },
+            {
+              heading: "Why I'm listing it on an engineering portfolio",
+              body:
+                "Controls work is heavy on documentation and operator training. Explaining a " +
+                "technical process clearly enough that a stranger can follow it and get the " +
+                "same result is the same skill as writing a loop sheet or training someone on " +
+                "an HMI — and this is 31 documented instances of doing it. Additionally, I ran a discord "+
+                "server where anyone who had any problems could come ask me questions - providing live support "+
+                "and running my own custom-made ticketing system, the same type of support that any engineer " +
+                "designing something will need to provide.",
+              points: [
+                "Scripted, recorded, and edited every video to a consistent production standard",
+                "Wrote and published a matching written tutorial for each one",
+                "Most-watched tutorial reached 68,000 views; several others between 12K and 46K"
+              ]
+            }
+          ],
+          specs: [
+            { label: "Videos",       value: "31, each with a written companion tutorial" },
+            { label: "Total views",  value: "250,000+" },
+            { label: "Top video",    value: "68,000 views" },
+            { label: "Subject",      value: "Server administration, networking, performance" }
+          ]
+        }
       },
       {
+        slug: "spotcord",
         title: "Spotcord — Discord-Controlled Spotify",
         tags: ["software"],
         image: "", imagePlaceholder: "APP SCREENSHOT 1600×900",
@@ -812,9 +1141,46 @@ window.SITE = {
           { value: "AES", label: "ENCRYPTED CREDENTIALS" }
         ],
         chips: ["Java", "Maven", "SQLite", "Spotify API", "Discord API"],
-        links: [{ label: "Source", href: "https://github.com/robertburdsall", icon: "code" }]
+        links: [{ label: "Source", href: "https://github.com/robertburdsall", icon: "code" }],
+
+        detail: {
+          role: "Solo project",
+          context: "Independent · May 2024 — Present",
+          summary:
+            "A Java Discord bot that lets a group control one Spotify session together. The " +
+            "interesting parts are concurrency and credential handling, not the playback " +
+            "commands.",
+          sections: [
+            {
+              heading: "The concurrency problem",
+              body:
+                "Multiple people issue commands at once against a single external API with " +
+                "its own rate limits and state. Handling that naively either serialises " +
+                "everything into a queue that feels slow, or races and corrupts playback state.",
+              points: [
+                "Used multithreading to handle simultaneous user commands efficiently",
+                "Persisted user data and playback state in SQLite so state survives restarts"
+              ]
+            },
+            {
+              heading: "Handling credentials properly",
+              body:
+                "The bot holds OAuth tokens for other people's Spotify accounts, which is a " +
+                "real responsibility. Tokens are encrypted at rest with AES keys rather than " +
+                "stored in plaintext — the standard bar, but one plenty of hobby projects skip."
+            }
+          ],
+          specs: [
+            { label: "Language",    value: "Java (Maven)" },
+            { label: "Storage",     value: "SQLite" },
+            { label: "APIs",        value: "Spotify Web API, Discord API" },
+            { label: "Concurrency", value: "Multithreaded command handling" },
+            { label: "Security",    value: "AES-encrypted credential storage" }
+          ]
+        }
       },
       {
+        slug: "aurum",
         title: "Aurum — Real-Time Coin Appraisal",
         tags: ["software"],
         image: "", imagePlaceholder: "APP SCREENSHOT 1600×900",
@@ -827,9 +1193,47 @@ window.SITE = {
           { value: "iOS + Android", label: "CROSS-PLATFORM" }
         ],
         chips: ["Dart", "Flutter", "Python", "TensorFlow", "Express.js"],
-        links: [{ label: "Source", href: "https://github.com/robertburdsall", icon: "code" }]
+        links: [{ label: "Source", href: "https://github.com/robertburdsall", icon: "code" }],
+
+        detail: {
+          role: "Full stack — model, app, and backend",
+          context: "Independent · Sep 2024 — Dec 2024",
+          summary:
+            "A cross-platform mobile app that identifies and values a coin from the camera in " +
+            "real time, tracks a portfolio of holdings, and syncs it to a backend. Built end " +
+            "to end: the model, the Flutter client, and the Express.js service behind it.",
+          sections: [
+            {
+              heading: "On-device inference",
+              body:
+                "Appraisal runs through TensorFlow Lite on the phone rather than a server " +
+                "round-trip, so identification is immediate and works without a good " +
+                "connection — which is the difference between a usable camera feature and a " +
+                "loading spinner."
+            },
+            {
+              heading: "Client and backend",
+              body:
+                "The app is one Flutter/Dart codebase targeting both platforms, talking to a " +
+                "Node service that handles valuation lookups and account state.",
+              points: [
+                "Cross-platform Flutter mobile app for iOS and Android from a single codebase",
+                "Live coin value retrieval and portfolio tracking, synchronising client- and server-side state",
+                "Express.js backend with JSON APIs and JWT-based authentication"
+              ]
+            }
+          ],
+          specs: [
+            { label: "Client",     value: "Flutter / Dart (iOS + Android)" },
+            { label: "Inference",  value: "TensorFlow Lite, on-device" },
+            { label: "Backend",    value: "Express.js, JSON APIs" },
+            { label: "Auth",       value: "JWT" },
+            { label: "Built",      value: "Sep — Dec 2024" }
+          ]
+        }
       },
       {
+        slug: "ncssm-tools",
         title: "NCSSM Resource &amp; TA Tracking",
         tags: ["software", "content"],
         image: "", imagePlaceholder: "APP SCREENSHOT 1600×900",
@@ -841,9 +1245,59 @@ window.SITE = {
           { value: "Built with", label: "FACULTY" },
           { value: "150+", label: "STUDENTS SERVED" }
         ],
-        chips: ["Flutter", "Dart", "Web"]
+        chips: ["Flutter", "Dart", "Web"],
+
+        detail: {
+          role: "Developer, alongside faculty",
+          context: "NC School of Science and Mathematics · Aug 2024 — May 2025",
+          summary:
+            "Two internal tools built with faculty while I was a computer science teaching " +
+            "assistant, serving the 150+ students I taught Java and Python to.",
+          sections: [
+            {
+              heading: "Resource tracking app",
+              body:
+                "A cross-platform Flutter/Dart application for tracking school resources, " +
+                "built with faculty rather than for them — the requirements came from the " +
+                "people who'd use it daily."
+            },
+            {
+              heading: "TA tracking platform",
+              body:
+                "A web-based platform to streamline course management for teaching " +
+                "assistants, replacing manual coordination."
+            },
+            {
+              heading: "What building for real users taught me",
+              body:
+                "Both tools had actual users with actual opinions who saw me in the hallway. " +
+                "That feedback loop is much tighter than a class project and much closer to " +
+                "how engineering work actually lands."
+            }
+          ],
+          specs: [
+            { label: "Resource app", value: "Flutter / Dart, cross-platform" },
+            { label: "TA platform",  value: "Web-based" },
+            { label: "Built with",   value: "NCSSM faculty" },
+            { label: "Context",      value: "CS Teaching Assistant, 150+ students" }
+          ]
+        }
       }
     ],
+
+    /* Labels on the project detail pages. */
+    detailLabels: {
+      viewLabel:   "Read more",
+      back:        "All projects",
+      overview:    "Overview",
+      specs:       "At a glance",
+      role:        "Role",
+      context:     "Where &amp; when",
+      prev:        "Previous project",
+      next:        "Next project",
+      notFound:    "That project doesn't exist.",
+      notFoundCta: "View all projects"
+    },
 
     emptyMessage: "No projects tagged with that yet.",
 
