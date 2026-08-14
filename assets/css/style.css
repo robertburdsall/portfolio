@@ -560,6 +560,32 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1
   background: transparent;
 }
 
+/* Compact entry: no card, no chips — a listed fact rather than a highlight.
+   Deliberately lighter so it reads as supporting context next to the
+   engineering entries. */
+.tl-item--compact { padding-bottom: 26px; }
+.tl-item--compact .tl-item__body {
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+  padding: 2px 0 2px 18px;
+}
+.tl-item--compact:hover .tl-item__body { border-color: var(--border-strong); }
+.tl-item--compact .tl-item__node { top: 8px; }
+.tl-item__compact-row {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px;
+}
+.tl-item--compact .tl-item__title {
+  font-size: 0.97rem; font-weight: 500; color: var(--text-2); margin-bottom: 0;
+}
+.tl-item--compact .tl-item__org {
+  font-size: 0.85rem; color: var(--muted); margin-bottom: 4px;
+}
+.tl-item__note {
+  font-size: 0.85rem; color: var(--muted); margin: 0; max-width: 68ch;
+}
+
 /* ---------- 8. SKILLS / FACTS / CONTACT ---------- */
 .skills { padding: 88px 0; }
 .skills__grid {
@@ -709,6 +735,20 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1
   background: rgba(11, 12, 14, 0.8);
   border: 1px solid var(--border-strong);
 }
+/* "4 photos · 1 video" — signals there's a gallery inside without making the
+   card itself a carousel. */
+.proj__count {
+  position: absolute; right: 10px; bottom: 10px;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 9px; border-radius: 3px;
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em;
+  color: var(--text);
+  background: rgba(11, 12, 14, 0.82);
+  border: 1px solid var(--border-strong);
+  pointer-events: none;
+}
+.proj__count svg { width: 13px; height: 13px; }
+
 .proj__title { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; color: #fff; }
 .proj__desc { color: var(--text-2); font-size: 0.91rem; margin-bottom: 14px; flex: 1; }
 .proj__metrics {
@@ -800,6 +840,125 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1
 .pd__points li::before {
   content: ""; position: absolute; left: 2px; top: 0.72em;
   width: 5px; height: 1px; background: var(--muted);
+}
+
+/* ---- gallery ---- */
+.pd__gallery { margin-top: 40px; }
+.pd__gallery-title {
+  font-size: 0.78rem; font-weight: 600; margin-bottom: 16px;
+  font-family: var(--mono); letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted);
+  padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.pd__gallery-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 16px;
+}
+.pd__shot { margin: 0; }
+.pd__shot--wide { grid-column: span 2; }
+
+.pd__shot-btn {
+  position: relative; display: block; width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 0; cursor: zoom-in; overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  transition: border-color 0.18s var(--ease);
+}
+.pd__shot-btn:hover { border-color: var(--border-strong); }
+.pd__shot-btn img,
+.pd__shot-btn video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.pd__play {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  color: #fff; pointer-events: none;
+}
+.pd__play svg {
+  width: 44px; height: 44px; padding: 13px;
+  border-radius: 50%;
+  background: rgba(11, 12, 14, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+.pd__shot figcaption {
+  margin-top: 9px; font-size: 0.82rem; color: var(--muted); line-height: 1.5;
+}
+
+/* ---- lightbox ---- */
+.lb { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; }
+.lb__backdrop { position: absolute; inset: 0; background: rgba(6, 7, 9, 0.94); cursor: zoom-out; }
+.lb__inner {
+  position: relative; z-index: 1;
+  width: min(1100px, 94vw); max-height: 92svh;
+  display: flex; flex-direction: column;
+}
+.lb__bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px; color: var(--text-2);
+}
+.lb__count { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.08em; }
+.lb__close {
+  display: grid; place-items: center;
+  width: 38px; height: 38px; padding: 0;
+  border-radius: var(--radius);
+  background: transparent; border: 1px solid var(--border-strong);
+  color: var(--text); cursor: pointer;
+  transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
+}
+.lb__close svg { width: 18px; height: 18px; }
+.lb__close:hover { background: rgba(255, 255, 255, 0.07); border-color: var(--text-2); }
+
+.lb__stage {
+  flex: 1 1 auto; min-height: 0;
+  display: grid; place-items: center;
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.lb__stage img,
+.lb__stage video { max-width: 100%; max-height: 78svh; display: block; object-fit: contain; }
+
+.lb__caption {
+  margin: 12px 0 0; text-align: center;
+  font-size: 0.88rem; color: var(--text-2);
+}
+
+.lb__nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  display: grid; place-items: center;
+  width: 44px; height: 44px; padding: 0;
+  border-radius: 50%;
+  background: rgba(11, 12, 14, 0.8);
+  border: 1px solid var(--border-strong);
+  color: var(--text); cursor: pointer;
+  transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
+}
+.lb__nav svg { width: 20px; height: 20px; }
+.lb__nav:hover { background: rgba(11, 12, 14, 0.95); border-color: var(--text-2); }
+.lb__nav--prev { left: -22px; }
+.lb__nav--next { right: -22px; }
+
+@media (max-width: 900px) {
+  .lb__nav--prev { left: 6px; }
+  .lb__nav--next { right: 6px; }
+}
+
+/* ---- attached documents ---- */
+.pd__docs { margin-top: 40px; }
+.pd__doc { margin: 0 0 20px; }
+.pd__doc:last-child { margin-bottom: 0; }
+.pd__doc-head {
+  display: flex; flex-wrap: wrap; align-items: flex-start;
+  justify-content: space-between; gap: 12px; margin-bottom: 12px;
+}
+.pd__doc-head strong { color: #fff; font-size: 0.97rem; font-weight: 600; }
+.pd__doc-head p { margin: 4px 0 0; color: var(--text-2); font-size: 0.88rem; max-width: 60ch; }
+.pd__doc-frame {
+  width: 100%; height: 640px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
 }
 
 .pd__aside { position: sticky; top: calc(var(--nav-h) + 24px); }
@@ -960,6 +1119,16 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1
   .pd__nav { grid-template-columns: 1fr; margin-top: 40px; }
   .pd__nav-item--next { text-align: left; grid-column: 1; }
   .pd__metrics { margin-bottom: 32px; }
+  .pd__doc-frame { height: 420px; }
+}
+
+/* The gallery keeps its grid on tablets — it only collapses to one column when
+   a second column would be too narrow to read. A `wide` shot can't span two
+   columns of one, so that's reset too. */
+@media (max-width: 560px) {
+  .pd__gallery-grid { grid-template-columns: 1fr; gap: 20px; }
+  .pd__shot--wide { grid-column: auto; }
+  .pd__shot-btn { aspect-ratio: 16 / 10; }
 }
 
 @media (max-width: 520px) {

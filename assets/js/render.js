@@ -42,6 +42,9 @@
     download: '<path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
     arrow:     '<path d="M5 12h14m0 0-6-6m6 6-6 6"/>',
     arrowLeft: '<path d="M19 12H5m0 0 6-6m-6 6 6 6"/>',
+    play:      '<path fill="currentColor" stroke="none" d="M8 5.2v13.6a1 1 0 0 0 1.52.86l11-6.8a1 1 0 0 0 0-1.72l-11-6.8A1 1 0 0 0 8 5.2Z"/>',
+    close:     '<path d="M18 6 6 18M6 6l12 12"/>',
+    gallery:   '<rect x="3" y="3" width="18" height="14" rx="2"/><path d="m3 14 4.5-4.5 4 4L15 9l6 5.5"/><circle cx="9" cy="8" r="1.2"/>',
     email:    '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 7 9-7"/>',
     phone:    '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8 9.8a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.4 1.8.6 2.8.8A2 2 0 0 1 22 16.9Z"/>',
     copy:     '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',
@@ -207,6 +210,11 @@
     /* timeline heading */
     fill("timeline-head", '<div class="section-head container">' + heading(H.timeline) + "</div>");
 
+    /* Rail caption lives in content.js; the markup for it is in the page shell
+       because the sticky layout needs it there. */
+    var railLabel = document.querySelector(".rail__now-label");
+    if (railLabel && H.timeline.railLabel) railLabel.textContent = H.timeline.railLabel;
+
     /* Timeline entries.
        content.js lists these oldest-first because that's the natural way to
        write and extend them — you append new experience to the bottom without
@@ -217,6 +225,33 @@
     if (H.timeline.order !== "oldest-first") ordered.reverse();
 
     var entries = ordered.map(function (e) {
+      /* Compact entries render as a single de-emphasized row rather than a
+         card — for roles worth listing for continuity but not worth competing
+         with the engineering work for attention. */
+      if (e.compact) {
+        return '<article class="tl-item tl-item--compact" data-year="' + e.year +
+          '" data-type="' + e.type + '" data-reveal>' +
+          '<div class="tl-item__node" aria-hidden="true"></div>' +
+          '<div class="tl-item__body">' +
+            '<div class="tl-item__compact-row">' +
+              '<h3 class="tl-item__title">' + e.title + "</h3>" +
+              '<span class="tl-item__date">' + e.date + "</span>" +
+            "</div>" +
+            (e.org ? '<p class="tl-item__org">' + e.org + "</p>" : "") +
+            (e.note ? '<p class="tl-item__note">' + e.note + "</p>" : "") +
+          "</div></article>";
+      }
+
+      /* Guard against a link pointing at a project that's since been deleted.
+         Removing a project from `projects.items` shouldn't silently leave a
+         timeline entry sending people to the "not found" page — drop the link
+         instead. */
+      if (e.link && /project\.html\?id=/.test(e.link.href)) {
+        var wantSlug = e.link.href.split("id=")[1];
+        var exists = S.projects.items.some(function (q) { return q.slug === wantSlug && q.detail; });
+        if (!exists) e = Object.assign({}, e, { link: null });
+      }
+
       var linkHtml = e.link
         ? btn({ label: e.link.label, href: e.link.href, style: e.link.style || "ghost", small: true,
                 icon: e.link.style === "primary" ? "arrow" : "link" })
@@ -264,9 +299,16 @@
         '<div class="skills__grid">' + cards + "</div></div></section>");
 
     /* facts */
+    /* The real figure is written into the markup, not "0". The count-up only
+       runs once the tile scrolls into view, so anything that reads the page
+       without scrolling — a screen reader, a search crawler, a recruiter
+       flicking past, a screenshot — used to see "0 Parts/hr inspected by a
+       machine I designed", which says the opposite of what's intended. */
     var facts = H.facts.map(function (f) {
       return '<div class="fact" data-reveal>' +
-        '<span class="fact__num" data-count="' + f.count + '" data-suffix="' + f.suffix + '">0</span>' +
+        '<span class="fact__num" data-count="' + f.count + '" data-suffix="' + f.suffix + '">' +
+          f.count + f.suffix +
+        "</span>" +
         '<span class="fact__label">' + f.label + "</span></div>";
     }).join("");
     fill("facts",
@@ -387,9 +429,23 @@
     }).join("");
 
     var items = P.items.map(function (p) {
-      var thumb = p.image
-        ? '<img src="' + p.image + '" alt="' + p.title.replace(/<[^>]+>/g, "") + '" />'
+      var cover = coverImage(p);
+      var shots = projectMedia(p);
+      var thumb = cover
+        ? '<img src="' + assetUrl(cover) + '" alt="' + p.title.replace(/<[^>]+>/g, "") + '" loading="lazy" decoding="async" />'
         : '<span class="proj__thumb-placeholder">' + (p.imagePlaceholder || "IMAGE 1600×900") + "</span>";
+
+      /* Tells the reader there's a gallery behind the card without turning the
+         card itself into a carousel. */
+      var countBadge = "";
+      if (shots.length > 1) {
+        var vids = shots.filter(isVideoSrc).length;
+        var pics = shots.length - vids;
+        var parts = [];
+        if (pics) parts.push(pics + " photo" + (pics > 1 ? "s" : ""));
+        if (vids) parts.push(vids + " video" + (vids > 1 ? "s" : ""));
+        countBadge = '<span class="proj__count">' + icon("gallery") + parts.join(" · ") + "</span>";
+      }
       var metrics = (p.metrics && p.metrics.length)
         ? '<div class="proj__metrics">' + p.metrics.map(function (m) {
             return '<div class="proj__metric"><b>' + m.value + "</b><span>" + m.label + "</span></div>";
@@ -418,7 +474,8 @@
 
       return '<article class="proj card" data-tech="' + p.tags.join(",") + '" data-reveal>' +
         '<div class="proj__thumb">' +
-          (p.featured ? '<span class="proj__featured">Featured</span>' : "") + thumbInner + "</div>" +
+          (p.featured ? '<span class="proj__featured">Featured</span>' : "") +
+          thumbInner + countBadge + "</div>" +
         title +
         '<p class="proj__desc">' + p.desc + "</p>" +
         metrics + chips(p.chips) + links + "</article>";
@@ -461,6 +518,42 @@
      ========================================================================= */
   function projectHref(p) { return "project.html?id=" + encodeURIComponent(p.slug); }
 
+  /* Asset paths are written literally in content.js — "project photos/Aurum/User
+     Guide Aurum.pdf" — because that's what the files are actually called. Spaces
+     and other stray characters have to be percent-encoded before they go into an
+     href or src or the browser won't find them. encodeURI leaves the slashes
+     alone, so only the segments get escaped. */
+  function assetUrl(path) {
+    if (!path) return "";
+    return encodeURI(path);
+  }
+
+  /* ---------- project media helpers (shared by the grid and detail page) ----------
+     A project's `detail.media` is the gallery. These let the card and the detail
+     hero reuse the first photo automatically, so adding pictures to a project is
+     the only step — you don't also have to set `image` by hand. An explicit
+     `image` still wins if you want a specific one as the cover. */
+  function isVideoSrc(m) {
+    if (m && m.type) return m.type === "video";
+    return /\.(mp4|webm|mov|m4v)(\?|$)/i.test((m && m.src) || "");
+  }
+
+  function projectMedia(p) {
+    return ((p.detail && p.detail.media) || []).filter(function (m) { return m && m.src; });
+  }
+
+  /* First usable still: an image, or a video's poster frame. */
+  function coverImage(p) {
+    if (p.image) return p.image;
+    var found = "";
+    projectMedia(p).some(function (m) {
+      if (!isVideoSrc(m)) { found = m.src; return true; }
+      if (m.poster) { found = m.poster; return true; }
+      return false;
+    });
+    return found;
+  }
+
   function renderProjectDetail() {
     var P = S.projects;
     var L = P.detailLabels || {};
@@ -487,8 +580,9 @@
     var desc = document.querySelector('meta[name="description"]');
     if (desc) desc.setAttribute("content", plain + " — " + p.desc.replace(/<[^>]+>/g, "").slice(0, 150));
 
-    var hero = p.image
-      ? '<img src="' + p.image + '" alt="' + plain + '" />'
+    var heroSrc = coverImage(p);
+    var hero = heroSrc
+      ? '<img src="' + assetUrl(heroSrc) + '" alt="' + plain + '" />'
       : '<span class="proj__thumb-placeholder">' + (p.imagePlaceholder || "IMAGE 1600×900") + "</span>";
 
     var metrics = (p.metrics && p.metrics.length)
@@ -509,6 +603,76 @@
       ? '<dl class="pd__specs">' + d.specs.map(function (s) {
           return "<dt>" + s.label + "</dt><dd>" + s.value + "</dd>";
         }).join("") + "</dl>"
+      : "";
+
+    /* ---- photo / video gallery ----
+       Videos are detected by extension unless the item declares a type.
+       Thumbnails are buttons, not bare images, so the gallery is reachable by
+       keyboard; main.js opens the lightbox from the data-lightbox index. */
+    var isVideo = isVideoSrc;
+    var media = projectMedia(p);
+    var gallery = "";
+    if (media.length) {
+      gallery = '<section class="pd__gallery" data-reveal>' +
+        '<h2 class="pd__gallery-title">' + (L.gallery || "Photos &amp; video") + "</h2>" +
+        '<div class="pd__gallery-grid" data-gallery>' +
+        media.map(function (m, i) {
+          var caption = m.caption || "";
+          var alt = (m.alt || caption || plain).replace(/<[^>]+>/g, "").replace(/"/g, "&quot;");
+          var inner = isVideo(m)
+            ? '<video src="' + assetUrl(m.src) + '"' + (m.poster ? ' poster="' + assetUrl(m.poster) + '"' : "") +
+              ' preload="metadata" muted playsinline></video>' +
+              '<span class="pd__play" aria-hidden="true">' + icon("play") + "</span>"
+            : '<img src="' + assetUrl(m.src) + '" alt="' + alt + '" loading="lazy" decoding="async" />';
+          return '<figure class="pd__shot' + (m.wide ? " pd__shot--wide" : "") + '">' +
+            '<button type="button" class="pd__shot-btn" data-lightbox="' + i + '"' +
+              ' aria-label="' + (isVideo(m) ? "Play" : "Enlarge") + ': ' + alt + '">' +
+              inner +
+            "</button>" +
+            (caption ? "<figcaption>" + caption + "</figcaption>" : "") +
+          "</figure>";
+        }).join("") +
+        "</div></section>";
+    }
+
+    /* ---- attached documents ----
+       A PDF gets its own section with an inline viewer and a download link,
+       rather than being buried as a text link. `<object>` falls back to the
+       download button on browsers that won't render PDFs inline (most mobile). */
+    var docs = (d.documents || []).filter(function (x) { return x && x.src; });
+    var documents = docs.length
+      ? '<section class="pd__docs" data-reveal>' +
+        '<h2 class="pd__gallery-title">' + (L.documents || "Documentation") + "</h2>" +
+        docs.map(function (doc) {
+          var href = assetUrl(doc.src);
+          return '<figure class="pd__doc">' +
+            '<figcaption class="pd__doc-head">' +
+              "<div><strong>" + (doc.title || "Document") + "</strong>" +
+              (doc.note ? "<p>" + doc.note + "</p>" : "") + "</div>" +
+              '<a class="proj__link" href="' + href + '" download>' +
+                icon("download") + (L.download || "Download PDF") + "</a>" +
+            "</figcaption>" +
+            '<object class="pd__doc-frame" data="' + href + '" type="application/pdf">' +
+              '<div class="empty-state"><p>Your browser can\'t display this PDF inline.</p>' +
+              '<a class="btn btn--primary btn--sm" href="' + href + '" download>' +
+                (L.download || "Download PDF") + "</a></div>" +
+            "</object></figure>";
+        }).join("") +
+        "</section>"
+      : "";
+
+    /* Payload the lightbox reads. Kept as JSON in a script tag rather than
+       scraped back out of the DOM, so captions and posters survive intact. */
+    var galleryData = media.length
+      ? '<script type="application/json" data-gallery-data>' +
+        JSON.stringify(media.map(function (m) {
+          return {
+            src: assetUrl(m.src),
+            poster: m.poster ? assetUrl(m.poster) : "",
+            caption: m.caption || "",
+            video: isVideo(m)
+          };
+        })).replace(/</g, "\\u003c") + "<\/script>"
       : "";
 
     /* previous / next, wrapping around the list */
@@ -536,7 +700,7 @@
           metrics +
 
           '<div class="pd__body">' +
-            '<div class="pd__main">' + sections + "</div>" +
+            '<div class="pd__main">' + sections + gallery + documents + galleryData + "</div>" +
             '<aside class="pd__aside" data-reveal>' +
               '<div class="card">' +
                 "<h3>" + (L.specs || "At a glance") + "</h3>" +

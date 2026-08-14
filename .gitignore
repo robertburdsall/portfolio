@@ -1,1 +1,4 @@
 *.md
+# Original un-optimized project media (large, and carries EXIF GPS of the
+# plant floor). The site uses assets/img/projects/ instead.
+assets/img/project photos/

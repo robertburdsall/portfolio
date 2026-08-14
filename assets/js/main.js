@@ -356,6 +356,124 @@
   }
 
   /* ---------------------------------------------------------
+     Project gallery lightbox
+
+     Opens a photo or video full-screen. Built as a modal dialog rather than a
+     styled overlay: focus moves in on open and returns to the thumbnail that
+     opened it, Escape and the backdrop close it, and arrow keys move between
+     items. Videos play with controls; only one plays at a time.
+     --------------------------------------------------------- */
+  function initLightbox() {
+    var grid = $("[data-gallery]");
+    var dataEl = $("[data-gallery-data]");
+    if (!grid || !dataEl) return;
+
+    var items;
+    try { items = JSON.parse(dataEl.textContent); }
+    catch (e) { return; }
+    if (!items || !items.length) return;
+
+    var index = 0;
+    var lastFocused = null;
+    var box = null;
+
+    function render() {
+      var it = items[index];
+      var stage = $(".lb__stage", box);
+      stage.innerHTML = it.video
+        ? '<video src="' + it.src + '"' + (it.poster ? ' poster="' + it.poster + '"' : "") +
+          ' controls autoplay playsinline></video>'
+        : '<img src="' + it.src + '" alt="' + (it.caption || "").replace(/"/g, "&quot;") + '" />';
+
+      $(".lb__caption", box).innerHTML = it.caption || "";
+      $(".lb__count", box).textContent = (index + 1) + " / " + items.length;
+
+      var multiple = items.length > 1;
+      $(".lb__nav--prev", box).hidden = !multiple;
+      $(".lb__nav--next", box).hidden = !multiple;
+    }
+
+    function step(delta) {
+      index = (index + delta + items.length) % items.length;
+      render();
+    }
+
+    function onKey(e) {
+      if (e.key === "Escape") { close(); return; }
+      if (items.length < 2) return;
+      if (e.key === "ArrowRight") { e.preventDefault(); step(1); }
+      if (e.key === "ArrowLeft")  { e.preventDefault(); step(-1); }
+      // keep focus inside the dialog
+      if (e.key === "Tab") {
+        var focusable = $$("button", box).filter(function (b) { return !b.hidden; });
+        if (!focusable.length) return;
+        var first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+
+    function close() {
+      if (!box) return;
+      document.removeEventListener("keydown", onKey);
+      box.remove();
+      box = null;
+      document.body.style.overflow = "";
+      if (lastFocused) lastFocused.focus();
+    }
+
+    function open(i, trigger) {
+      index = i;
+      lastFocused = trigger || null;
+
+      box = document.createElement("div");
+      box.className = "lb";
+      box.setAttribute("role", "dialog");
+      box.setAttribute("aria-modal", "true");
+      box.setAttribute("aria-label", "Project media viewer");
+      box.innerHTML =
+        '<div class="lb__backdrop" data-lb-close></div>' +
+        '<div class="lb__inner">' +
+          '<div class="lb__bar">' +
+            '<span class="lb__count"></span>' +
+            '<button type="button" class="lb__close" data-lb-close aria-label="Close">' +
+              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>' +
+            "</button>" +
+          "</div>" +
+          '<div class="lb__stage"></div>' +
+          '<p class="lb__caption"></p>' +
+          '<button type="button" class="lb__nav lb__nav--prev" aria-label="Previous">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"/></svg></button>' +
+          '<button type="button" class="lb__nav lb__nav--next" aria-label="Next">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>' +
+        "</div>";
+
+      document.body.appendChild(box);
+      document.body.style.overflow = "hidden";
+      render();
+
+      box.addEventListener("click", function (e) {
+        if (e.target.closest("[data-lb-close]")) { close(); return; }
+        if (e.target.closest(".lb__nav--prev")) { step(-1); return; }
+        if (e.target.closest(".lb__nav--next")) { step(1); }
+      });
+      document.addEventListener("keydown", onKey);
+
+      $(".lb__close", box).focus();
+    }
+
+    grid.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-lightbox]");
+      if (!btn) return;
+      var i = parseInt(btn.getAttribute("data-lightbox"), 10);
+      if (isNaN(i) || !items[i]) return;
+      // pause any inline preview video so two aren't playing at once
+      $$("video", grid).forEach(function (v) { v.pause(); });
+      open(i, btn);
+    });
+  }
+
+  /* ---------------------------------------------------------
      Footer year
      --------------------------------------------------------- */
   function initYear() {
@@ -374,6 +492,7 @@
     initSkillBars();
     initFilters();
     initCopy();
+    initLightbox();
     initYear();
   }
 
