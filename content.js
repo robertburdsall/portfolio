@@ -45,6 +45,46 @@ window.SITE = {
     locationNote:  "open to relocation",
     workAuth:      "Authorized to work in the U.S.",
 
+    /* THE RESUME PDF.
+       Keep the file at this path. If you export a new resume, overwrite
+       assets/resume.pdf rather than adding a differently-named file —
+       every Download button, the inline viewer on the resume page, and any
+       link you have already shared all point here. Change `resumeFileName`
+       to whatever you want it saved as on a recruiter's computer. */
+    resumePdf:      "assets/resume.pdf",
+    resumeFileName: "Robert Burdsall Resume 2026.pdf",
+
+    /* ROLE-SPECIFIC RESUMES.
+       The general resumes from Documents\Resumes\latex resumes\out\, one per
+       role family. They feed the picker on the resume page and the three
+       download links in the "Currently seeking" strip on the home page.
+       The first one is the default. After rebuilding the resumes, copy them
+       over the files in assets/resumes/ (and copy the Controls one over
+       assets/resume.pdf too, since older links and the QR code point there).
+
+       A version can be linked directly: resume.html?version=electrical-power
+       opens the resume page with that version already selected.
+
+       key      : used in the URL. Keep it lowercase with dashes.
+       label    : the name on the picker button
+       blurb    : one line saying which roles it's for
+       src      : the PDF
+       fileName : what it's saved as on a recruiter's computer */
+    resumeVersions: [
+      { key: "controls", label: "Controls &amp; Automation",
+        blurb: "PLC, instrumentation &amp; controls, robotics, and manufacturing automation roles",
+        src: "assets/resumes/controls.pdf",
+        fileName: "Robert Burdsall Resume - Controls.pdf" },
+      { key: "electrical-power", label: "Electrical Design &amp; Power",
+        blurb: "Electrical design, power systems, distribution, and energy roles",
+        src: "assets/resumes/electrical-power.pdf",
+        fileName: "Robert Burdsall Resume - Electrical Design and Power.pdf" },
+      { key: "avionics-test", label: "Avionics, Test &amp; Manufacturing",
+        blurb: "Aerospace, avionics, hardware test, and manufacturing engineering roles",
+        src: "assets/resumes/avionics-test.pdf",
+        fileName: "Robert Burdsall Resume - Avionics, Test and Manufacturing.pdf" }
+    ],
+
     /* Shown in the contact panel and on the resume page. */
     availability:  "Also open to part-time work in Raleigh during the fall &amp; spring semesters"
   },
@@ -72,8 +112,8 @@ window.SITE = {
 
       /* The line under your name. One sentence — keep it factual. */
       tagline:
-        "Controls &amp; automation engineering — PLC programming, electrical panel " +
-        "design, and machine vision integration.",
+        "Electrical engineering — control panel design, PLC programming, and machine " +
+        "vision, taken from concept through commissioning on a production floor.",
 
       /* Your intro paragraph.
          Ordered to put evidence before backstory: a recruiter reaches the
@@ -81,14 +121,15 @@ window.SITE = {
          server and NCSSM are still told in full on the timeline — they just
          don't need to come before the proof. */
       bio:
-        "I'm an <strong>Electrical &amp; Computer Engineering</strong> student at " +
-        "<strong>NC State</strong> specializing in controls and automation. Last summer at " +
-        "IDEAL Fastener I designed a zipper cap inspection machine end to end — vision, PLC, " +
-        "pneumatics, and operator HMI — that runs at <strong>120 parts a minute</strong> on a " +
-        "production floor, and built five control panels alongside it. I came to hardware from " +
-        "six years of software and operations work, which is why I'm comfortable on both sides " +
-        "of a control system: the panel and the code running on it. Looking for a " +
-        "<strong>Summer 2027 controls or automation engineering internship</strong>.",
+        "I'm an <strong>Electrical Engineering</strong> student at <strong>NC State</strong>. " +
+        "This past summer at IDEAL Fastener I took a zipper cap inspection machine from " +
+        "concept to commissioning — electrical design, PLC logic, machine vision, and operator " +
+        "HMI — and it now runs at <strong>120 parts a minute</strong> on the production floor. " +
+        "Alongside it I designed and wired five-plus control panels and drew a TinyCAD " +
+        "schematic for every one. I came to hardware from six years of software and operations " +
+        "work, so I'm comfortable on both sides of a system: the wiring and the code running on " +
+        "it. Looking for a <strong>Summer 2027 electrical engineering internship</strong> in " +
+        "controls and automation, electrical design and power, or hardware test and manufacturing.",
 
       /* The pills under your photo. Add or remove lines freely. */
       badges: [
@@ -101,11 +142,27 @@ window.SITE = {
       photoAlt: "Portrait of Robert Burdsall",
 
       buttons: [
-        { label: "Download Résumé", href: "assets/resume.pdf", style: "primary", icon: "download", download: true },
+        { label: "Download Résumé", href: "", style: "primary", icon: "download", download: true },
         { label: "View Projects",   href: "projects.html",     style: "ghost",   icon: "arrow" }
       ],
 
       scrollCue: "View experience"
+    },
+
+    /* ---- "Currently seeking" strip, just below the top of the page ----
+       The facts a recruiter screens on, so they don't have to dig for them,
+       plus one resume download per role family (from person.resumeVersions). */
+    seeking: {
+      eyebrow: "Currently seeking",
+      title: "Summer 2027 electrical engineering internship",
+      facts: [
+        { label: "Availability", value: "Full-time, all of Summer 2027" },
+        { label: "Location",     value: "Raleigh, NC — willing to relocate" },
+        { label: "Degree",       value: "B.S. Electrical Engineering, NC State — Dec 2028" },
+        { label: "Work auth",    value: "U.S. — no sponsorship needed" }
+      ],
+      pickLabel: "Résumé by role — pick the one that fits the position",
+      downloadLabel: "PDF"
     },
 
     /* ---- Timeline section heading ---- */
@@ -229,16 +286,17 @@ window.SITE = {
         },
 
         {
-          year: "2024", type: "project", tag: "Robotics",
-          date: "Jan 2024 — Present",
-          title: "FIRST Robotics Competition — Team 9150",
-          org: "NC School of Science and Mathematics · Morganton, NC",
-          points: [
-            "Designed and implemented full robot control software in Java using WPILib, achieving the <strong>3rd-highest scoring performance in North Carolina</strong> with integrated vision and dual scoring systems",
-            "Led all programming efforts, overseeing system architecture, debugging, and performance optimization",
-            "Mentor for <strong>25+ students</strong>, teaching Java, WPILib, and robotics programming fundamentals"
-          ],
-          chips: ["Java", "WPILib", "CTRE-Phoenix", "REV", "Machine Vision"]
+          year: "2024", type: "work", tag: "Work",
+          date: "May 2024 — Jan 2026",
+          title: "Sales Associate",
+          org: "Best Buy · Charlotte, NC",
+          /* `compact: true` renders this as a single de-emphasized line instead
+             of a full card. Use it for roles worth listing for continuity but
+             not worth the same visual weight as the engineering work — this one
+             was competing with the IDEAL Fastener internship. The full write-up
+             is still on the resume page. */
+          compact: true,
+          note: "Named Store Leader June 2024 and June 2025; led the store in memberships and total revenue for multiple months."
         },
 
         {
@@ -255,20 +313,6 @@ window.SITE = {
         },
 
         {
-          year: "2024", type: "work", tag: "Work",
-          date: "May 2024 — Jan 2026",
-          title: "Sales Associate",
-          org: "Best Buy · Charlotte, NC",
-          /* `compact: true` renders this as a single de-emphasized line instead
-             of a full card. Use it for roles worth listing for continuity but
-             not worth the same visual weight as the engineering work — this one
-             was competing with the IDEAL Fastener internship. The full write-up
-             is still on the resume page. */
-          compact: true,
-          note: "Named Store Leader June 2024 and June 2025; led the store in memberships and total revenue for multiple months."
-        },
-
-        {
           year: "2024", type: "project", tag: "Projects",
           date: "2024 — Present",
           title: "Aurum &amp; Spotcord",
@@ -282,16 +326,32 @@ window.SITE = {
         },
 
         {
+          year: "2024", type: "project", tag: "Robotics",
+          date: "Aug 2024 — Present",
+          title: "FIRST Robotics Competition — Team 9150 Labyrinth Robotics",
+          org: "Software Developer (2024–25) → Lead Programming Mentor (2025–Present) · Morganton, NC",
+          points: [
+            "Designed and implemented the full robot control software in Java using WPILib, integrating vision and dual scoring systems — the robot posted the <strong>3rd-highest scoring performance across 2025 North Carolina events</strong>",
+            "Led all programming efforts, overseeing system architecture, debugging, and performance optimization",
+            "Lead and mentor <strong>25+ students</strong>, teaching Java, WPILib, wiring, and iterative test and debug of a competition robot"
+          ],
+          chips: ["Java", "WPILib", "CTRE-Phoenix", "REV", "Machine Vision"]
+        },
+
+        {
           year: "2025", type: "education", tag: "Education",
-          date: "Aug 2025 — May 2028",
-          title: "B.E. Electrical &amp; Computer Engineering",
+          date: "Aug 2025 — Dec 2028 (expected)",
+          title: "B.S. Electrical Engineering",
           org: "North Carolina State University · Raleigh, NC",
           desc:
-            "Bachelor of Engineering in Electrical and Computer Engineering, currently " +
-            "carrying a <strong>3.5 GPA</strong> and <strong>graduating May 2028</strong>. The " +
-            "pivot from software into hardware and controls — and the point where the two " +
-            "backgrounds started reinforcing each other.",
-          chips: ["Circuits", "Embedded Systems", "Controls"]
+            "Bachelor of Science in Electrical Engineering, carrying a <strong>3.5 GPA</strong> " +
+            "with an <strong>expected graduation of December 2028</strong>. The pivot from " +
+            "software into hardware — and the point where the two backgrounds started " +
+            "reinforcing each other.",
+          points: [
+            "<strong>Coursework:</strong> ECE 200 Introduction to Signals, Circuits and Systems · ECE 212 Fundamentals of Logic Design · ECE 209 Computer Systems Programming · ECE 109 Introduction to Computer Systems"
+          ],
+          chips: ["Circuits &amp; Systems", "Logic Design", "Computer Systems"]
         },
 
         {
@@ -300,28 +360,33 @@ window.SITE = {
           title: "Electrical Engineering Intern",
           org: "IDEAL Fastener Corporation · Oxford, NC",
           desc:
-            "Hands-on controls work on live production machinery — panels, PLCs, and vision " +
-            "systems running on the factory floor.",
+            "Hands-on electrical and controls work on live production machinery — panels, " +
+            "PLCs, and vision systems scoped, built, and commissioned on the factory floor.",
           points: [
-            "Designed and fabricated <strong>5+ electrical control panels</strong> for production machinery, handling full wiring assembly (relays, power supplies, DIN rail, disconnects, proximity/laser sensors, solenoid valves) and producing TinyCAD schematics for future replication",
-            "Programmed Omron PLCs using CX-Programmer to implement automated machine control logic, and configured and trained Keyence IV3/IV4 vision systems — defining inspection criteria and teaching defect recognition — to upgrade <strong>3 existing floor machines</strong> for real-time quality detection",
-            "Led end-to-end design of a zipper cap inspection machine inspecting <strong>120 caps/min</strong>, featuring trained Keyence vision inspection, vacuum ejection, solenoid valve sequencing, a DOPSoft HMI, and PLC-driven quality tracking with alarm functionality for good/bad rate monitoring"
+            "Led end-to-end design of a zipper cap inspection machine running <strong>120 caps/min</strong> — scoped the work, ordered the hardware, and commissioned it on the floor with no spec to work from — integrating Keyence vision, vacuum ejection, solenoid valve sequencing, a DOPSoft HMI, and PLC quality tracking with good/bad rate alarms",
+            "Designed and fabricated <strong>5+ electrical control panels</strong> — relays, power supplies, DIN rail, disconnects, proximity/laser sensors, solenoid valves — and produced TinyCAD schematics for every panel so plant technicians can replicate, service, and troubleshoot them from the drawings alone",
+            "Established automated defect detection for the first time on <strong>3 existing production machines</strong>, reaching <strong>100% inspection coverage</strong> by configuring Keyence IV3/IV4 vision systems and defining defect recognition criteria",
+            "Programmed Omron PLCs in CX-Programmer — ladder logic control sequences, interlocks, stepper motion pulse output, and buffered part tracking through the machine"
           ],
-          chips: ["Omron PLC", "CX-Programmer", "Keyence IV3/IV4", "DOPSoft HMI", "TinyCAD", "Panel Wiring"]
+          chips: ["Omron PLC", "CX-Programmer", "Keyence IV3/IV4", "DOPSoft HMI", "TinyCAD", "Panel Wiring", "Commissioning"]
         },
 
         {
           year: "2027", type: "future", tag: "Next",
           date: "Summer 2027",
-          title: "Seeking a Controls Engineering Internship",
+          title: "Seeking an Electrical Engineering Internship",
           desc:
-            "Looking for a Summer 2027 controls or automation engineering internship with " +
-            "ownership of a panel, a machine, or a line — ideally in manufacturing, energy, " +
-            "or industrial automation.",
+            "Looking for a Summer 2027 internship with real ownership of hardware — a panel, a " +
+            "machine, or a system. That could be controls and automation (manufacturing, " +
+            "robotics, or autonomous systems), electrical design and power distribution, or " +
+            "hardware test and manufacturing. The work rhymes across all three: read the " +
+            "drawing, build it right, document it so someone else can maintain it, and find out " +
+            "why it behaves differently under load than it did on the bench. Available full-time " +
+            "all summer and willing to relocate.",
           link: { label: "Get in touch", href: "#contact", style: "primary" }
         }
 
-        /* The standalone "B.E.E.C.E. Conferred — May 2028" entry was removed.
+        /* The standalone "Degree conferred" entry was removed.
            It made the timeline open on a future year, which reads as if the
            page is showing content from 2028. The graduation date is already
            carried by the NC State education entry above. */
@@ -332,14 +397,16 @@ window.SITE = {
     /* ---- The "why this combination" panel ---- */
     angle: {
       eyebrow: "Why this combination",
-      title: "Controls engineer with a<br />",
+      title: "Electrical engineer with a<br />",
       titleAccent: "software background",
       body:
-        "Most controls candidates learn to code because the job required it. I spent six " +
+        "Most engineering students learn to code because a class required it. I spent six " +
         "years writing software, running live infrastructure, and managing operations before " +
-        "I ever wired a panel — so when a machine needs custom logic, a data pipeline, or a " +
-        "piece of tooling that doesn't exist yet, that isn't the hard part. Industrial " +
-        "automation is moving toward exactly that intersection, and I'm already standing on it."
+        "I ever wired a panel — so when a machine needs custom logic, a test needs automating, " +
+        "or a pile of results needs to become a tool, that isn't the hard part. The other half " +
+        "is the habit operations taught me: document the build so the next person can run it " +
+        "without you. Hardware increasingly ships with software attached, and I'm comfortable " +
+        "on both sides of that line."
     },
 
     /* ---- Skills cards ---- */
@@ -348,25 +415,25 @@ window.SITE = {
       title: "What I ",
       titleAccent: "work with",
       sub:
-        "Every item here is something I've actually shipped with — on a production floor, a " +
+        "Every item here is something I've used on real work — a production floor, a " +
         "competition robot, live server infrastructure, or a released app.",
       cards: [
-        { icon: "plc",    title: "Industrial Automation",
-          chips: ["Omron PLCs", "CX-Programmer", "DOPSoft HMI", "Machine Control Logic", "Solenoid Sequencing", "Alarm Handling"] },
-        { icon: "vision", title: "Machine Vision",
-          chips: ["Keyence IV3 / IV4", "SmartNavigator", "Defect Recognition", "Inspection Criteria", "Real-Time QC", "Vacuum Ejection"] },
-        { icon: "bolt",   title: "Electrical Panel Design",
-          chips: ["Control Panels", "TinyCAD", "DIN Rail", "Relays", "Power Supplies", "Disconnects", "Proximity / Laser Sensors"] },
+        { icon: "bolt",   title: "Electrical Design",
+          chips: ["Control Panel Design", "Power Distribution", "Wiring &amp; Terminations", "TinyCAD Schematics", "DIN Rail", "Relays", "Disconnects", "Proximity / Laser Sensors"] },
+        { icon: "plc",    title: "Controls &amp; Automation",
+          chips: ["Omron PLCs", "CX-Programmer", "Ladder Logic", "Interlocks", "DOPSoft HMI", "Stepper Motion Control", "Solenoid &amp; Pneumatic Actuation", "Alarm Handling"] },
+        { icon: "vision", title: "Machine Vision &amp; Inspection",
+          chips: ["Keyence IV3 / IV4", "IV Smart Navigator", "Defect Recognition", "Inspection Criteria", "Real-Time QC", "Vacuum Ejection"] },
+        { icon: "layers", title: "CAD &amp; Fabrication",
+          chips: ["SolidWorks", "TinyCAD", "Prusa Slicer", "Cura", "3D Printing"] },
         { icon: "code",   title: "Languages",
           chips: ["Java", "Python", "C / C++", "Dart", "SQL", "JavaScript", "HTML/CSS"] },
         { icon: "grid",   title: "Libraries &amp; Frameworks",
           chips: ["pandas", "NumPy", "Matplotlib", "TensorFlow Lite", "WPILib", "CTRE-Phoenix", "REV", "Flutter", "Express.js"] },
         { icon: "cube",   title: "Developer Tools",
           chips: ["Git", "Docker", "Maven", "SQLite", "Google Cloud", "VS Code", "IntelliJ", "Android Studio", "Xcode"] },
-        { icon: "layers", title: "CAD &amp; Fabrication",
-          chips: ["SolidWorks", "TinyCAD", "Prusa Slicer", "Cura", "3D Printing"] },
         { icon: "shield", title: "Operations &amp; Communication",
-          chips: ["Team Leadership", "Training &amp; Onboarding", "Technical Writing", "Documentation", "Live Infrastructure", "Partnerships"] }
+          chips: ["Team Leadership", "Training &amp; Onboarding", "Technical Writing", "Documentation", "Live Infrastructure", "Microsoft Office (Word, Excel, PowerPoint, Outlook)"] }
       ]
     },
 
@@ -459,16 +526,25 @@ window.SITE = {
     titleAccent: "résumé",
     sub: "The PDF is the one-page version. This page carries the full history behind it.",
 
+    /* The version picker above the page. The versions themselves are listed
+       under person.resumeVersions at the top of this file. */
+    picker: {
+      label:    "Résumé version",
+      download: "Download PDF",
+      print:    "Print"
+    },
+
     /* Left sidebar */
     glance: {
       title: "At a glance",
       items: [
-        "<strong>Seeking:</strong> Controls / Automation Internship, Summer 2027",
+        "<strong>Seeking:</strong> Electrical engineering internship, Summer 2027 — controls &amp; automation, electrical design &amp; power, or hardware test &amp; manufacturing",
+        "<strong>Summer 2027:</strong> available full-time all summer",
         "<strong>Also open to:</strong> part-time work in Raleigh, fall &amp; spring semesters",
-        "<strong>Major:</strong> B.E. Electrical &amp; Computer Engineering",
+        "<strong>Major:</strong> B.S. Electrical Engineering",
         "<strong>School:</strong> NC State University",
         "<strong>GPA:</strong> 3.5",
-        "<strong>Graduating:</strong> May 2028",
+        "<strong>Graduating:</strong> Dec 2028 (expected)",
         "<strong>Background:</strong> 6 years software &amp; operations before engineering",
         "<strong>Location:</strong> Raleigh, NC (open to relocation)",
         "<strong>Work auth:</strong> U.S. — no sponsorship needed"
@@ -498,13 +574,16 @@ window.SITE = {
     objective: {
       title: "Objective",
       body:
-        "Electrical and Computer Engineering student at NC State with industry experience in " +
-        "PLC programming, electrical panel design, and machine vision integration, seeking a " +
-        "Summer 2027 controls or automation engineering internship to apply industrial " +
-        "automation expertise in manufacturing systems. Six years of prior software " +
-        "development and operations leadership — including running live infrastructure for a " +
-        "100,000-player community — means I bring a software engineer's toolkit to problems " +
-        "that increasingly need one."
+        "Electrical Engineering student at NC State with hands-on industry experience taking " +
+        "production hardware from concept to commissioning: control panel design and " +
+        "fabrication, PLC programming, machine vision integration, and schematics written for " +
+        "the technicians who service the equipment. Led an automated inspection machine " +
+        "running 120 parts/min end to end and brought first-time automated defect detection " +
+        "to 3 production machines. Seeking a Summer 2027 electrical engineering internship in " +
+        "controls and automation, electrical design and power systems, or hardware test and " +
+        "manufacturing. Six years of prior software development and operations leadership, " +
+        "including running live infrastructure for a 100,000-player community, means I bring " +
+        "a software engineer's toolkit to hardware problems that increasingly need one."
     },
 
     /* ======================================================================
@@ -516,9 +595,10 @@ window.SITE = {
         title: "Education",
         entries: [
           {
-            role: "Bachelor of Engineering, Electrical &amp; Computer Engineering",
-            when: "Aug 2025 — May 2028",
-            org: "North Carolina State University · Raleigh, NC · GPA 3.5"
+            role: "Bachelor of Science in Electrical Engineering",
+            when: "Aug 2025 — Expected Dec 2028",
+            org: "North Carolina State University · Raleigh, NC · GPA 3.5",
+            points: ["Relevant coursework: ECE 200 Introduction to Signals, Circuits and Systems; ECE 212 Fundamentals of Logic Design; ECE 209 Computer Systems Programming; ECE 109 Introduction to Computer Systems."]
           },
           {
             role: "High School Diploma, Computer Science Focus",
@@ -536,20 +616,23 @@ window.SITE = {
             when: "May 2026 — Aug 2026",
             org: "IDEAL Fastener Corporation · Oxford, NC",
             points: [
-              "Designed and fabricated 5+ electrical control panels for production machinery, handling full wiring assembly (relays, power supplies, DIN rail, disconnects, proximity/laser sensors, solenoid valves) and producing TinyCAD schematics for future replication.",
-              "Programmed Omron PLCs using CX-Programmer to implement automated machine control logic, and configured and trained Keyence IV3/IV4 vision systems — defining inspection criteria and teaching defect recognition — to upgrade 3 existing floor machines for real-time quality detection.",
-              "Led end-to-end design of a zipper cap inspection machine inspecting 120 caps/min, featuring trained Keyence vision inspection, vacuum ejection, solenoid valve sequencing, a DOPSoft HMI, and PLC-driven quality tracking with alarm functionality for good/bad rate monitoring."
+              "Led end-to-end design of a zipper cap inspection machine running 120 parts/min, from concept through commissioning, integrating Keyence machine vision, vacuum ejection, solenoid valve sequencing, a DOPSoft HMI, and PLC quality tracking with good/bad rate alarms. Scoped the work, ordered the hardware, and commissioned it on the floor with no spec to work from.",
+              "Designed and fabricated 5+ electrical control panels, performing full wiring and terminations across relays, power supplies, DIN rail, disconnects, proximity and laser sensors, and solenoid valves.",
+              "Produced TinyCAD schematics for every panel so plant technicians could replicate, service, and troubleshoot the hardware from documentation alone.",
+              "Established automated defect detection for the first time on 3 existing production machines, reaching 100% inspection coverage by configuring Keyence IV3/IV4 vision systems and defining defect recognition criteria.",
+              "Programmed Omron PLCs in CX-Programmer, implementing ladder logic control sequences, interlocks, stepper motion pulse output, and buffered part tracking through the machine."
             ],
-            chips: ["Omron PLC", "CX-Programmer", "Keyence IV3/IV4", "DOPSoft", "TinyCAD"]
+            chips: ["Omron PLC", "CX-Programmer", "Ladder Logic", "Keyence IV3/IV4", "DOPSoft", "TinyCAD", "Panel Fabrication"]
           },
           {
-            role: "Programming Lead &amp; Mentor",
-            when: "Jan 2024 — Present",
-            org: "FIRST Robotics Competition, Team 9150 · NCSSM · Morganton, NC",
+            role: "Software Developer (2024–25) → Lead Programming Mentor (2025–Present)",
+            when: "Aug 2024 — Present",
+            org: "FIRST Robotics Competition, Team 9150 Labyrinth Robotics · Morganton, NC",
             points: [
-              "Designed and implemented full robot control software in Java using WPILib, achieving 3rd-highest scoring performance in North Carolina with integrated vision and dual scoring systems.",
+              "Designed and implemented the full robot control software in Java using WPILib, integrating vision and dual scoring systems.",
+              "Achieved the 3rd-highest scoring performance across 2025 North Carolina events, competing at the FNC District Catawba County and UNC Asheville District Events.",
               "Led all programming efforts, overseeing system architecture, debugging, and performance optimization.",
-              "Mentor for 25+ students, teaching Java, WPILib, and robotics programming fundamentals."
+              "Lead and mentor 25+ students, teaching Java, WPILib, wiring, and iterative test and debug of a competition robot."
             ],
             chips: ["Java", "WPILib", "CTRE-Phoenix", "REV", "Machine Vision"]
           },
@@ -657,10 +740,13 @@ window.SITE = {
     skillGroups: {
       title: "Technical Skills",
       groups: [
+        { label: "Electrical Design",  chips: ["Control Panel Design &amp; Fabrication", "Wiring &amp; Terminations", "Power Distribution Hardware", "Schematic Capture (TinyCAD)"] },
+        { label: "Controls &amp; Automation", chips: ["Omron PLCs (CX-Programmer, Ladder Logic)", "DOPSoft HMI", "Keyence IV3/IV4", "IV Smart Navigator", "Stepper Motion Control", "Sensor Integration"] },
+        { label: "Mechanical Design",  chips: ["SolidWorks (Essentials for Part Design certificate)", "Prusa Slicer", "Cura"] },
         { label: "Languages",          chips: ["Java", "Python", "C/C++", "Dart", "SQL", "JavaScript", "HTML/CSS"] },
         { label: "Libraries",          chips: ["pandas", "NumPy", "Matplotlib", "TensorFlow Lite", "WPILib", "CTRE-Phoenix", "REV"] },
-        { label: "Developer Tools",    chips: ["Git", "Docker", "XCode", "Android Studio", "Google Cloud Platform", "VS Code", "TensorFlow", "IntelliJ"] },
-        { label: "Design &amp; Automation", chips: ["SolidWorks", "Prusa Slicer", "Cura", "TinyCAD", "Keyence SmartNavigator", "CX-Programmer", "DOPSoft"] }
+        { label: "Developer Tools",    chips: ["Git", "Docker", "Xcode", "Android Studio", "Google Cloud Platform", "VS Code", "TensorFlow", "IntelliJ"] },
+        { label: "Office",             chips: ["Word", "Excel", "PowerPoint", "Outlook"] }
       ]
     },
 
@@ -723,7 +809,9 @@ window.SITE = {
             "A production machine that inspects zipper caps at 120 per minute, ejects the " +
             "defective ones, and tracks good/bad rate for the operators running the line. I " +
             "owned it from concept through commissioning — the mechanical sequencing, the " +
-            "electrical build, the PLC logic, the vision training, and the operator interface.",
+            "electrical build, the PLC logic, the vision training, and the operator interface. " +
+            "There was no spec to work from: I scoped the machine, ordered the hardware, and " +
+            "commissioned it on the floor.",
           sections: [
             {
               heading: "The problem",
@@ -737,11 +825,11 @@ window.SITE = {
               heading: "What I built",
               body:
                 "A single integrated station: as the zipper caps move around the vibrating bowl, " +
-                "a stepper motor separates them in order for the trained Keyance AI Camera to reliably " +
-                "detect any defects. the PLC then uses the results, and a solenoid-driven vacuum ejector " +
+                "a stepper motor separates them in order for the trained Keyence AI camera to reliably " +
+                "detect any defects. The PLC then uses the results, and a solenoid-driven vacuum ejector " +
                 "removes anything that fails — all sequenced quickly enough to keep the assembly process moving.",
               points: [
-                "Trained the Keyence vision inspection to recognise good and defective caps, defining the inspection criteria from sample parts",
+                "Trained the Keyence vision inspection to recognize good and defective caps, defining the inspection criteria from sample parts",
                 "Wrote the Omron PLC logic in CX-Programmer to sequence detection, ejection timing, and the interlocks between them",
                 "Built the vacuum ejection and solenoid valve sequencing that physically removes failed parts from the stream",
                 "Designed a DOPSoft HMI so operators can see status, counts, and rate without needing the programming software",
@@ -768,7 +856,9 @@ window.SITE = {
             { label: "Vision",         value: "Keyence, trained inspection criteria" },
             { label: "Operator HMI",   value: "DOPSoft" },
             { label: "Rejection",      value: "Vacuum ejection, solenoid valve sequencing" },
-            { label: "Monitoring",     value: "PLC quality tracking with good/bad rate alarms" }
+            { label: "Monitoring",     value: "PLC quality tracking with good/bad rate alarms" },
+            { label: "Part tracking",  value: "Buffered queue — each result travels with its part to the reject point" },
+            { label: "Documentation",  value: "TinyCAD schematic set — power, I/O, and vision wiring" }
           ],
 
           /* ==================================================================
@@ -814,7 +904,7 @@ window.SITE = {
 
             /* --- software screens --- */
             { src: "assets/img/projects/zipper-cap-inspection/04-vision-inspection-history.jpg",
-              caption: "Keyence IV Navigator — the running inspection log, every part recorded pass/fail at a 150 ms processing time." },
+              caption: "Keyence IV Smart Navigator — the running inspection log, every part recorded pass/fail at a 150 ms processing time." },
             { src: "assets/img/projects/zipper-cap-inspection/05-hmi-operation-screen.jpg",
               caption: "The DOPSoft operator screen I built: bowl control, good/bad/total counts, live error rate and reject cutoff — one of five screens including active and historical alarms." },
             { src: "assets/img/projects/zipper-cap-inspection/06-plc-ladder-inspection.jpg",
@@ -837,13 +927,15 @@ window.SITE = {
         image: "", imagePlaceholder: "VISION SETUP 1600×900",
         desc:
           "Configured, wired, and trained Keyence IV3/IV4 vision systems on three existing floor " +
-          "machines — defining inspection criteria and teaching defect recognition — to add " +
-          "real-time quality detection to equipment that previously had none.",
+          "machines — defining inspection criteria and teaching defect recognition — establishing " +
+          "automated defect detection for the first time on each machine and taking them to " +
+          "<strong>100% inspection coverage</strong>.",
         metrics: [
           { value: "3", label: "MACHINES UPGRADED" },
-          { value: "Real-time", label: "DEFECT DETECTION" }
+          { value: "100%", label: "INSPECTION COVERAGE" },
+          { value: "First", label: "AUTOMATED DETECTION ON EACH" }
         ],
-        chips: ["Keyence IV3/IV4", "SmartNavigator", "Defect Recognition"],
+        chips: ["Keyence IV3/IV4", "IV Smart Navigator", "Defect Recognition"],
 
         detail: {
           role: "Vision configuration &amp; training",
@@ -853,7 +945,7 @@ window.SITE = {
             "quality check. Rather than replace them, I installed Keyence IV3/IV4 vision " +
             "systems onto each one so defects are caught as they happen. In order to control " +
             "those cameras, I installed a LattePanda Windows 10 Dev Computer, alongside some " +
-            "relays to interact with the existing PLC infastructure.",
+            "relays to interact with the existing PLC infrastructure.",
           sections: [
             {
               heading: "The approach",
@@ -865,22 +957,26 @@ window.SITE = {
               points: [
                 "Mounted and configured Keyence IV3/IV4 vision sensors on three existing production machines",
                 "Defined inspection criteria per machine from real sample parts",
-                "Trained defect recognition using Keyence SmartNavigator, iterating until the pass/fail boundary held against normal part variation",
+                "Trained defect recognition using Keyence IV Smart Navigator, iterating until the pass/fail boundary held against normal part variation",
                 "Integrated the vision result into each machine's existing control scheme",
               ]
             },
             {
               heading: "Result",
               body:
-                "Three machines that shipped with no inspection capability now flag defects " +
-                "in real time, without replacing the underlying equipment. Additionally, a new" +
-                "sorting method now allows for easier movement of cut pieces, reducing operator work."
+                "Three machines that ran for years with no automated quality check now flag " +
+                "defects in real time, without replacing the underlying equipment. Each one " +
+                "went from no automated detection at all to <strong>100% inspection " +
+                "coverage</strong> — every part checked as it passes, rather than an operator " +
+                "spot-checking a sample. A new sorting method also makes moving cut pieces " +
+                "easier, cutting down the manual handling operators were doing."
             }
           ],
           specs: [
             { label: "Machines upgraded", value: "3 existing production machines" },
+            { label: "Coverage",          value: "100% — every part inspected, first automated detection on each machine" },
             { label: "Vision hardware",   value: "Keyence IV3 / IV4" },
-            { label: "Configuration",     value: "Keyence SmartNavigator" },
+            { label: "Configuration",     value: "Keyence IV Smart Navigator" },
             { label: "Detection",         value: "Real-time, inline" }
           ],
 
@@ -925,9 +1021,9 @@ window.SITE = {
             {
               heading: "What the work involved",
               body:
-                "Each panel delt with different " +
-                "voltage requirements, such as 120V for lower efficiency machines, 220 for production " +
-                "machines, and even 3-phase 220V. I had to cut dinrail and wire shielding to match requirements. "+ 
+                "Each panel dealt with different " +
+                "voltage requirements, such as 120V for lower efficiency machines, 220V for production " +
+                "machines, and even 3-phase 220V. I had to cut DIN rail and wire shielding to match requirements. "+ 
                 "From there I would have a 24V DC Power Supply deliver power to whatever the job required, " +
                 "such as PLCs, Camera Vision Controllers, Solenoids, Motor Controllers, and other job-specific requirements. "+
                 "Adhered to traditional wiring standards, such as using disconnects, relays, labeling both ends, etc.",
@@ -945,7 +1041,7 @@ window.SITE = {
                 "An undocumented panel is a liability the moment the person who built it " +
                 "leaves. Drawing each build in TinyCAD meant the plant kept a reference for " +
                 "replication and for troubleshooting after my internship ended. " +
-                "Additionally, it helped me keep my wiring organized and intentional from the beginning -" +
+                "Additionally, it helped me keep my wiring organized and intentional from the beginning — " +
                 "whenever I had any questions about design choices, I could check what I had already decided " +
                 "would work."
 
@@ -995,8 +1091,8 @@ window.SITE = {
           "sensor-driven intake, and a Limelight AprilTag routine that parks the robot on a " +
           "scoring pose by closing three PID loops at once.",
         metrics: [
-          { value: "3rd", label: "HIGHEST SCORING IN NC" },
-          { value: "3 wks", label: "FROM ZERO TO COMPETING" },
+          { value: "3rd", label: "HIGHEST SCORING, 2025 NC EVENTS" },
+          { value: "122", label: "COMMITS, 2025 SEASON" },
           { value: "25+", label: "STUDENTS MENTORED" }
         ],
         chips: ["Java", "WPILib", "CTRE Swerve", "Limelight", "PID", "Motion Profiling"],
@@ -1005,24 +1101,24 @@ window.SITE = {
         ],
 
         detail: {
-          role: "Programming lead &amp; mentor",
-          context: "FIRST Robotics Competition, Team 9150 · NCSSM · Jan 2024 — Present",
+          role: "Software developer, now lead programming mentor",
+          context: "FIRST Robotics Competition, Team 9150 Labyrinth Robotics · Morganton, NC · Aug 2024 — Present",
           summary:
             "122 commits of Java on WPILib covering four subsystems and the autonomous " +
-            "routines that tie them together. I joined " +
+            "routines that tie them together. I'd been around " +
             '<a href="https://labyrobots.org" target="_blank" rel="noopener">Labyrinth Robotics</a> ' +
-            "three weeks before our first competition with no robotics experience, inherited a " +
-            "mechanically finished robot and an empty programming team, and got it driving and " +
-            "scoring in time. We finished with the third-highest scoring performance in North " +
-            "Carolina.",
+            "in an advising role since the start of the 2024 school year, then took on the " +
+            "programming in January 2025 with no robotics experience and an empty programming " +
+            "team. The 2025 robot posted the third-highest scoring performance across North " +
+            "Carolina events that season.",
           sections: [
             {
-              heading: "Three weeks, no programmers",
+              heading: "Starting with no programmers",
               body:
-                "The team had a sound robot and nobody to write code for it. I had never " +
-                "touched robotics. Everything below I learned during those three weeks and the " +
-                "season that followed — PID tuning, motion profiling, vision integration, and " +
-                "how to find a fault on a machine that only misbehaves under load.",
+                "The team had a robot to build and nobody to write code for it, and I had never " +
+                "touched robotics. Everything below I learned during the 2025 build season and " +
+                "the competitions that followed — PID tuning, motion profiling, vision " +
+                "integration, and how to find a fault on a machine that only misbehaves under load.",
               points: [
                 "Wrote the complete control software in Java on WPILib, on a CTRE swerve drivetrain",
                 "Built two scoring mechanisms — an elevator and a pivoting intake — that operate independently without fighting each other",
@@ -1102,8 +1198,9 @@ window.SITE = {
             { label: "Elevator",   value: "2× REV SparkFlex, PID + trapezoidal profile + gravity feedforward" },
             { label: "Intake",     value: "3× SparkFlex, absolute encoder, LaserCan ToF sensor" },
             { label: "Vision",     value: "Limelight AprilTag, three-axis PID alignment" },
-            { label: "Result",     value: "3rd-highest scoring performance in North Carolina" },
-            { label: "Team role",  value: "Programming lead; mentor to 25+ students" }
+            { label: "Events",     value: "FNC District Catawba County · FNC District UNC Asheville" },
+            { label: "Result",     value: "3rd-highest scoring performance across 2025 NC events" },
+            { label: "Team role",  value: "Software developer (2024–25); lead programming mentor to 25+ students (2025–present)" }
           ],
           /* Photos / video for this project. Same format as the zipper cap
              project above: { src, caption, poster, wide }. */
@@ -1200,7 +1297,7 @@ window.SITE = {
         slug: "aurum",
         title: "Aurum — Coin Identification &amp; Portfolio Tracking",
         tags: ["software"],
-        image: "", imagePlaceholder: "APP SCREENSHOT 1600×900",
+        image: "assets/img/projects/aurum/00-cover.jpg", imagePlaceholder: "APP SCREENSHOT 1600×900",
         desc:
           "A cross-platform <strong>Flutter</strong> app that identifies a coin from your " +
           "camera and tracks what a collection is actually worth by metal content rather than " +
@@ -1301,7 +1398,7 @@ window.SITE = {
           /* The PDF renders inline on the project page with a download button. */
           documents: [
             {
-              src: "assets/img/project photos/Aurum/User Guide Aurum.pdf",
+              src: "assets/docs/aurum-user-guide.pdf",
               title: "Aurum User Guide — Alpha Release",
               note:
                 "Nine pages covering installation, every feature, and the known limitations " +
@@ -1309,9 +1406,22 @@ window.SITE = {
             }
           ],
 
-          /* Photos / video for this project. Same format as the zipper cap
-             project above: { src, caption, poster, wide }. */
-          media: []
+          /* Screens from the alpha build, taken from the user guide. `tall: true`
+             gives phone screenshots a portrait tile instead of a 4:3 crop. */
+          media: [
+            { src: "assets/img/projects/aurum/01-screen-006.jpg", tall: true,
+              caption: "The catalogue — every coin with its live bullion value and mint date range, searchable and sortable." },
+            { src: "assets/img/projects/aurum/02-screen-012.jpg", tall: true,
+              caption: "Coin detail: live bullion value against face value, with a metal-composition chart — this Double Eagle is 90% gold." },
+            { src: "assets/img/projects/aurum/03-screen-018.jpg", tall: true,
+              caption: "Portfolio overview — total value against live pricing, value over time, and composition split by count and by value." },
+            { src: "assets/img/projects/aurum/04-screen-021.jpg", tall: true,
+              caption: "The portfolio list, with per-coin quantities and live values." },
+            { src: "assets/img/projects/aurum/05-screen-025.jpg", tall: true,
+              caption: "On-device recognition: the camera identifies a Roosevelt dime and asks for confirmation before anything is saved." },
+            { src: "assets/img/projects/aurum/06-screen-028.jpg", tall: true,
+              caption: "After confirming, the user sets a quantity and the coin is added to the portfolio." }
+          ]
         }
       }
     ],

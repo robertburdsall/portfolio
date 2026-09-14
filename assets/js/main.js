@@ -321,6 +321,71 @@
   }
 
   /* ---------------------------------------------------------
+     Resume version picker (resume page)
+     Swaps every download link and the inline PDF viewer to the chosen
+     role-specific resume, and writes ?version= into the URL so the page can
+     be shared already pointing at the right one.
+     --------------------------------------------------------- */
+  function initResumePicker() {
+    var buttons = $$("[data-resume-version]");
+    var versions = (window.SITE && window.SITE.person && window.SITE.person.resumeVersions) || [];
+    if (!buttons.length || !versions.length) return;
+
+    function find(key) {
+      for (var i = 0; i < versions.length; i++) if (versions[i].key === key) return versions[i];
+      return null;
+    }
+
+    function select(btn, focus) {
+      var v = find(btn.getAttribute("data-resume-version"));
+      if (!v) return;
+      var src = encodeURI(v.src);
+
+      buttons.forEach(function (b) {
+        var on = b === btn;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-checked", on ? "true" : "false");
+        b.setAttribute("tabindex", on ? "0" : "-1");
+      });
+      if (focus) btn.focus();
+
+      $$("[data-resume-download]").forEach(function (a) {
+        a.setAttribute("href", src);
+        a.setAttribute("download", v.fileName || "");
+      });
+
+      var blurb = $("[data-resume-blurb]");
+      if (blurb) blurb.innerHTML = v.blurb || "";
+
+      /* Changing an <object>'s data attribute in place doesn't reload it in
+         every browser, so swap in a fresh copy. */
+      var frame = $("[data-resume-frame]");
+      if (frame && frame.getAttribute("data") !== src) {
+        var fresh = frame.cloneNode(true);
+        fresh.setAttribute("data", src);
+        frame.parentNode.replaceChild(fresh, frame);
+      }
+
+      if (window.history && history.replaceState) {
+        var url = location.pathname + "?version=" + encodeURIComponent(v.key) + location.hash;
+        history.replaceState(null, "", url);
+      }
+    }
+
+    buttons.forEach(function (btn, i) {
+      btn.addEventListener("click", function () { select(btn, false); });
+      /* Arrow keys move between options, as in any radio group. */
+      btn.addEventListener("keydown", function (e) {
+        var step = (e.key === "ArrowRight" || e.key === "ArrowDown") ? 1
+                 : (e.key === "ArrowLeft"  || e.key === "ArrowUp")   ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        select(buttons[(i + step + buttons.length) % buttons.length], true);
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------
      Copy-to-clipboard buttons
      --------------------------------------------------------- */
   function initCopy() {
@@ -491,6 +556,7 @@
     initCounters();
     initSkillBars();
     initFilters();
+    initResumePicker();
     initCopy();
     initLightbox();
     initYear();
