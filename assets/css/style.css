@@ -638,64 +638,7 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1
 }
 .contact__meta dfn { font-style: normal; color: var(--muted); }
 
-/* "Currently seeking" strip under the hero. The screening facts a recruiter
-   looks for first, then one resume per role family. Same surface and border
-   language as the contact panel; no new colors. */
-.seeking { padding: 8px 0 0; }
-.seeking__panel {
-  padding: clamp(24px, 3.4vw, 36px);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  border: 1px solid var(--border);
-}
-.seeking__head .eyebrow { margin-bottom: 8px; }
-.seeking__title {
-  font-size: clamp(1.2rem, 2.2vw, 1.5rem); font-weight: 600;
-  letter-spacing: -0.015em; color: #fff; margin-bottom: 22px;
-}
-.seeking__facts {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px 24px; margin: 0 0 26px;
-  padding-bottom: 24px; border-bottom: 1px solid var(--border);
-}
-.seeking__facts dt {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
-}
-.seeking__facts dd { margin: 0; font-size: 0.92rem; color: var(--text); }
-.seeking__pick { font-size: 0.85rem; color: var(--text-2); margin-bottom: 12px; }
-.seeking__versions {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px;
-}
-.seeking__version {
-  display: flex; flex-direction: column; gap: 6px; height: 100%;
-  padding: 16px 18px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border-strong);
-  background: var(--bg-2);
-  transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
-}
-.seeking__version:hover { border-color: var(--accent); background: var(--surface-2); }
-.seeking__version-name { font-weight: 600; font-size: 0.95rem; color: #fff; }
-.seeking__version-blurb { font-size: 0.84rem; color: var(--text-2); line-height: 1.5; }
-.seeking__version-dl {
-  display: inline-flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 6px;
-  font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.04em;
-  color: var(--accent-bright);
-}
-.seeking__version-dl svg { width: 14px; height: 14px; }
-
 /* ---------- 9. RESUME PAGE ---------- */
-
-/* Resume version picker, under the page heading */
-.rpick { margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--border); }
-.rpick__label {
-  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
-}
-.rpick__options { display: flex; flex-wrap: wrap; gap: 8px; }
-.rpick__blurb { font-size: 0.88rem; color: var(--text-2); margin: 12px 0 18px; min-height: 1.4em; }
-.rpick__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .page-head { padding: calc(var(--nav-h) + 78px) 0 52px; position: relative; }
 .page-head__inner { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 26px; }
 .page-head .section-sub { margin-bottom: 0; }
@@ -1211,7 +1154,7 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1
 @media print {
   body::before,
   .nav, .footer, .hero__grid, .hero__scroll,
-  .rail, .scroll-progress, .filters, .rpick { display: none !important; }
+  .rail, .scroll-progress, .filters { display: none !important; }
   body { background: #fff; color: #000; }
   .tl-item__body, .card, .rentry, .contact__panel { border: 1px solid #ccc; background: #fff; }
   .grad, .fact__num, .rail__now-year, .section-title, .hero__title { color: #000; }

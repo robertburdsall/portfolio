@@ -161,11 +161,17 @@
         "</div>" +
 
         /* Plain labelled text rather than emoji — emoji read as informal on a
-           page a hiring manager is evaluating. */
+           page a hiring manager is evaluating. Each line is optional: delete
+           the field in content.js and the line disappears rather than
+           rendering "undefined". */
         '<p class="contact__meta">' +
-          "<span><dfn>Location</dfn> " + S.person.location + " — " + S.person.locationNote + "</span>" +
-          '<span class="sep">·</span>' +
-          "<span><dfn>Work authorization</dfn> " + S.person.workAuth + "</span></p>" +
+          "<span><dfn>Location</dfn> " + S.person.location +
+            (S.person.locationNote ? " — " + S.person.locationNote : "") + "</span>" +
+          (S.person.workAuth
+            ? '<span class="sep">·</span>' +
+              "<span><dfn>Work authorization</dfn> " + S.person.workAuth + "</span>"
+            : "") +
+        "</p>" +
         (S.person.availability
           ? '<p class="contact__meta contact__meta--note">' + S.person.availability + "</p>"
           : "") +
@@ -209,33 +215,6 @@
           '<span class="hero__scroll-line" aria-hidden="true"></span>' +
           '<span class="hero__scroll-text">' + h.scrollCue + "</span></a>" +
       "</section>");
-
-    /* "Currently seeking" strip — the screening facts, then one resume per
-       role family so a recruiter downloads the version that fits the job. */
-    var sk = H.seeking;
-    if (sk) {
-      var skFacts = (sk.facts || []).map(function (f) {
-        return "<div><dt>" + f.label + "</dt><dd>" + f.value + "</dd></div>";
-      }).join("");
-      var skVersions = resumeVersions().map(function (v) {
-        return '<li><a class="seeking__version" href="' + assetUrl(v.src) + '"' + versionDownloadAttr(v) + ">" +
-          '<span class="seeking__version-name">' + v.label + "</span>" +
-          (v.blurb ? '<span class="seeking__version-blurb">' + v.blurb + "</span>" : "") +
-          '<span class="seeking__version-dl">' + icon("download") + (sk.downloadLabel || "PDF") + "</span>" +
-          "</a></li>";
-      }).join("");
-      fill("seeking",
-        '<section class="seeking" id="seeking" aria-labelledby="seeking-title"><div class="container">' +
-          '<div class="seeking__panel" data-reveal>' +
-            '<div class="seeking__head">' +
-              '<p class="eyebrow">' + sk.eyebrow + "</p>" +
-              '<h2 class="seeking__title" id="seeking-title">' + sk.title + "</h2>" +
-            "</div>" +
-            '<dl class="seeking__facts">' + skFacts + "</dl>" +
-            '<p class="seeking__pick">' + sk.pickLabel + "</p>" +
-            '<ul class="seeking__versions">' + skVersions + "</ul>" +
-          "</div></div></section>");
-    }
 
     /* timeline heading */
     fill("timeline-head", '<div class="section-head container">' + heading(H.timeline) + "</div>");
@@ -368,38 +347,16 @@
      ========================================================================= */
   function renderResume() {
     var R = S.resume;
-    var PK = R.picker || {};
-    var versions = resumeVersions();
-    var sel = versions[selectedVersionIndex()];
-
-    /* Version picker. The buttons are a radio group; main.js swaps the
-       download links and the inline viewer when one is chosen. With a single
-       version there's nothing to choose, so only the buttons render. */
-    var picker = versions.length > 1
-      ? '<div class="rpick__options" role="radiogroup" aria-label="' + (PK.label || "Résumé version").replace(/&amp;/g, "&") + '">' +
-          versions.map(function (v) {
-            var on = v === sel;
-            return '<button type="button" class="filter' + (on ? " is-active" : "") + '" role="radio"' +
-              ' aria-checked="' + on + '" tabindex="' + (on ? "0" : "-1") + '"' +
-              ' data-resume-version="' + v.key + '">' + v.label + "</button>";
-          }).join("") +
-        "</div>" +
-        '<p class="rpick__blurb" data-resume-blurb>' + (sel.blurb || "") + "</p>"
-      : "";
-
     fill("resume-head",
       '<section class="page-head"><div class="container"><div class="page-head__inner"><div>' +
         '<p class="eyebrow" data-reveal>' + R.eyebrow + "</p>" +
         '<h1 class="section-title" data-reveal>' + R.title + '<span class="grad">' + R.titleAccent + "</span></h1>" +
-        '<p class="section-sub" data-reveal>' + R.sub + "</p></div></div>" +
-        '<div class="rpick" data-reveal>' +
-          (picker ? '<p class="rpick__label">' + (PK.label || "Résumé version") + "</p>" + picker : "") +
-          '<div class="rpick__actions">' +
-            '<a class="btn btn--primary" data-resume-download href="' + assetUrl(sel.src) + '"' + versionDownloadAttr(sel) + ">" +
-              icon("download") + (PK.download || "Download PDF") + "</a>" +
-            '<button class="btn btn--ghost" onclick="window.print()">' + icon("print") + (PK.print || "Print") + "</button>" +
-          "</div>" +
-        "</div></div></section>");
+        '<p class="section-sub" data-reveal>' + R.sub + "</p></div>" +
+        '<div class="page-head__actions" data-reveal>' +
+          '<a class="btn btn--primary" href="' + resumeHref() + '"' + resumeDownloadAttr() + ">" +
+            icon("download") + "Download PDF</a>" +
+          '<button class="btn btn--ghost" onclick="window.print()">' + icon("print") + "Print</button>" +
+        "</div></div></div></section>");
 
     /* sidebar */
     var bars = R.strengths.items.map(function (s) {
@@ -453,9 +410,9 @@
       '</h2><article class="rentry">' + groups + "</article></section>";
 
     blocks += '<section class="rblock" data-reveal><h2 class="rblock__title">' + R.pdfTitle + "</h2>" +
-      '<object class="pdf-frame" data-resume-frame data="' + assetUrl(sel.src) + '" type="application/pdf">' +
+      '<object class="pdf-frame" data="' + resumeHref() + '" type="application/pdf">' +
       '<div class="empty-state"><p>Your browser can\'t display the PDF inline.</p>' +
-      '<a class="btn btn--primary btn--sm" data-resume-download href="' + assetUrl(sel.src) + '"' + versionDownloadAttr(sel) + ">Download it instead</a></div></object></section>";
+      '<a class="btn btn--primary btn--sm" href="' + resumeHref() + '"' + resumeDownloadAttr() + ">Download it instead</a></div></object></section>";
 
     fill("resume-main", '<div class="resume__main">' + blocks + "</div>");
   }
@@ -579,24 +536,6 @@
     return name ? ' download="' + name + '"' : " download";
   }
 
-  /* Role-specific resumes (person.resumeVersions). Falls back to the single
-     PDF so the picker and seeking strip still work if the list is removed. */
-  function resumeVersions() {
-    var v = S.person && S.person.resumeVersions;
-    return (v && v.length) ? v : [{ key: "resume", label: "Résumé", blurb: "", src: resumeHref(), fileName: S.person.resumeFileName }];
-  }
-  function versionDownloadAttr(v) {
-    return v.fileName ? ' download="' + v.fileName.replace(/"/g, "&quot;") + '"' : " download";
-  }
-  /* ?version=<key> in the URL preselects a version, so a tailored link can
-     open the page on the right PDF. Unknown keys fall back to the first. */
-  function selectedVersionIndex() {
-    var m = /[?&]version=([^&#]+)/.exec(location.search);
-    var key = m ? decodeURIComponent(m[1]) : "";
-    var idx = 0;
-    resumeVersions().forEach(function (v, i) { if (v.key === key) idx = i; });
-    return idx;
-  }
 
   function projectHref(p) { return "project.html?id=" + encodeURIComponent(p.slug); }
 

@@ -42,8 +42,6 @@ window.SITE = {
     github:   "https://github.com/robertburdsall",
 
     location:      "Raleigh, NC",
-    locationNote:  "open to relocation",
-    workAuth:      "Authorized to work in the U.S.",
 
     /* THE RESUME PDF.
        Keep the file at this path. If you export a new resume, overwrite
@@ -52,41 +50,7 @@ window.SITE = {
        link you have already shared all point here. Change `resumeFileName`
        to whatever you want it saved as on a recruiter's computer. */
     resumePdf:      "assets/resume.pdf",
-    resumeFileName: "Robert Burdsall Resume 2026.pdf",
-
-    /* ROLE-SPECIFIC RESUMES.
-       The general resumes from Documents\Resumes\latex resumes\out\, one per
-       role family. They feed the picker on the resume page and the three
-       download links in the "Currently seeking" strip on the home page.
-       The first one is the default. After rebuilding the resumes, copy them
-       over the files in assets/resumes/ (and copy the Controls one over
-       assets/resume.pdf too, since older links and the QR code point there).
-
-       A version can be linked directly: resume.html?version=electrical-power
-       opens the resume page with that version already selected.
-
-       key      : used in the URL. Keep it lowercase with dashes.
-       label    : the name on the picker button
-       blurb    : one line saying which roles it's for
-       src      : the PDF
-       fileName : what it's saved as on a recruiter's computer */
-    resumeVersions: [
-      { key: "controls", label: "Controls &amp; Automation",
-        blurb: "PLC, instrumentation &amp; controls, robotics, and manufacturing automation roles",
-        src: "assets/resumes/controls.pdf",
-        fileName: "Robert Burdsall Resume - Controls.pdf" },
-      { key: "electrical-power", label: "Electrical Design &amp; Power",
-        blurb: "Electrical design, power systems, distribution, and energy roles",
-        src: "assets/resumes/electrical-power.pdf",
-        fileName: "Robert Burdsall Resume - Electrical Design and Power.pdf" },
-      { key: "avionics-test", label: "Avionics, Test &amp; Manufacturing",
-        blurb: "Aerospace, avionics, hardware test, and manufacturing engineering roles",
-        src: "assets/resumes/avionics-test.pdf",
-        fileName: "Robert Burdsall Resume - Avionics, Test and Manufacturing.pdf" }
-    ],
-
-    /* Shown in the contact panel and on the resume page. */
-    availability:  "Also open to part-time work in Raleigh during the fall &amp; spring semesters"
+    resumeFileName: "Robert Burdsall Resume 2026.pdf"
   },
 
   /* Top-right navigation links */
@@ -128,14 +92,11 @@ window.SITE = {
         "Alongside it I designed and wired five-plus control panels and drew a TinyCAD " +
         "schematic for every one. I came to hardware from six years of software and operations " +
         "work, so I'm comfortable on both sides of a system: the wiring and the code running on " +
-        "it. Looking for a <strong>Summer 2027 electrical engineering internship</strong> in " +
-        "controls and automation, electrical design and power, or hardware test and manufacturing.",
+        "it.",
 
-      /* The pills under your photo. Add or remove lines freely. */
-      badges: [
-        "Open to Summer 2027 internships",
-        "Part-time in Raleigh — Fall &amp; Spring"
-      ],
+      /* The pills under your photo. Delete an entry to remove it, or set
+         this to [] for no pills at all. */
+      badges: [],
 
       /* Your photo. Put the file in assets/img/ and change the name here. */
       photo:    "assets/img/profilephoto.jpg",
@@ -147,22 +108,6 @@ window.SITE = {
       ],
 
       scrollCue: "View experience"
-    },
-
-    /* ---- "Currently seeking" strip, just below the top of the page ----
-       The facts a recruiter screens on, so they don't have to dig for them,
-       plus one resume download per role family (from person.resumeVersions). */
-    seeking: {
-      eyebrow: "Currently seeking",
-      title: "Summer 2027 electrical engineering internship",
-      facts: [
-        { label: "Availability", value: "Full-time, all of Summer 2027" },
-        { label: "Location",     value: "Raleigh, NC — willing to relocate" },
-        { label: "Degree",       value: "B.S. Electrical Engineering, NC State — Dec 2028" },
-        { label: "Work auth",    value: "U.S. — no sponsorship needed" }
-      ],
-      pickLabel: "Résumé by role — pick the one that fits the position",
-      downloadLabel: "PDF"
     },
 
     /* ---- Timeline section heading ---- */
@@ -369,21 +314,6 @@ window.SITE = {
             "Programmed Omron PLCs in CX-Programmer — ladder logic control sequences, interlocks, stepper motion pulse output, and buffered part tracking through the machine"
           ],
           chips: ["Omron PLC", "CX-Programmer", "Keyence IV3/IV4", "DOPSoft HMI", "TinyCAD", "Panel Wiring", "Commissioning"]
-        },
-
-        {
-          year: "2027", type: "future", tag: "Next",
-          date: "Summer 2027",
-          title: "Seeking an Electrical Engineering Internship",
-          desc:
-            "Looking for a Summer 2027 internship with real ownership of hardware — a panel, a " +
-            "machine, or a system. That could be controls and automation (manufacturing, " +
-            "robotics, or autonomous systems), electrical design and power distribution, or " +
-            "hardware test and manufacturing. The work rhymes across all three: read the " +
-            "drawing, build it right, document it so someone else can maintain it, and find out " +
-            "why it behaves differently under load than it did on the bench. Available full-time " +
-            "all summer and willing to relocate.",
-          link: { label: "Get in touch", href: "#contact", style: "primary" }
         }
 
         /* The standalone "Degree conferred" entry was removed.
@@ -501,11 +431,10 @@ window.SITE = {
     /* ---- Contact panel at the bottom ---- */
     contact: {
       eyebrow: "Let's talk",
-      title: "Currently interviewing for<br />",
-      titleAccent: "Summer 2027 internships",
+      title: "Get in ",
+      titleAccent: "touch",
       sub:
-        "Email or text me — I reply within a day. I'm also open to part-time work in the " +
-        "Raleigh area during the fall and spring semesters.",
+        "Email or text me — I reply within a day.",
       /* Button labels. "Compose in Gmail" is a fallback for anyone whose
          computer has no mail app registered, where mailto: does nothing. */
       emailLabel:   "Email me",
@@ -526,28 +455,16 @@ window.SITE = {
     titleAccent: "résumé",
     sub: "The PDF is the one-page version. This page carries the full history behind it.",
 
-    /* The version picker above the page. The versions themselves are listed
-       under person.resumeVersions at the top of this file. */
-    picker: {
-      label:    "Résumé version",
-      download: "Download PDF",
-      print:    "Print"
-    },
-
     /* Left sidebar */
     glance: {
       title: "At a glance",
       items: [
-        "<strong>Seeking:</strong> Electrical engineering internship, Summer 2027 — controls &amp; automation, electrical design &amp; power, or hardware test &amp; manufacturing",
-        "<strong>Summer 2027:</strong> available full-time all summer",
-        "<strong>Also open to:</strong> part-time work in Raleigh, fall &amp; spring semesters",
         "<strong>Major:</strong> B.S. Electrical Engineering",
         "<strong>School:</strong> NC State University",
         "<strong>GPA:</strong> 3.5",
         "<strong>Graduating:</strong> Dec 2028 (expected)",
         "<strong>Background:</strong> 6 years software &amp; operations before engineering",
-        "<strong>Location:</strong> Raleigh, NC (open to relocation)",
-        "<strong>Work auth:</strong> U.S. — no sponsorship needed"
+        "<strong>Location:</strong> Raleigh, NC"
       ]
     },
 
@@ -572,16 +489,15 @@ window.SITE = {
     },
 
     objective: {
-      title: "Objective",
+      title: "Summary",
       body:
         "Electrical Engineering student at NC State with hands-on industry experience taking " +
         "production hardware from concept to commissioning: control panel design and " +
         "fabrication, PLC programming, machine vision integration, and schematics written for " +
         "the technicians who service the equipment. Led an automated inspection machine " +
         "running 120 parts/min end to end and brought first-time automated defect detection " +
-        "to 3 production machines. Seeking a Summer 2027 electrical engineering internship in " +
-        "controls and automation, electrical design and power systems, or hardware test and " +
-        "manufacturing. Six years of prior software development and operations leadership, " +
+        "to 3 production machines. Six years of prior software development and operations " +
+        "leadership, " +
         "including running live infrastructure for a 100,000-player community, means I bring " +
         "a software engineer's toolkit to hardware problems that increasingly need one."
     },
